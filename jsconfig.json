@@ -9,7 +9,8 @@
       "@assets/*": ["assets/*"],
       "@redux/*": ["redux/*"],
       "@services/*": ["services/*"],
-      "@hooks/*": ["hooks/*"]
+      "@hooks/*": ["hooks/*"],
+      "@routers/*": ["routers/*"]
     }
   },
   "include": ["src"]

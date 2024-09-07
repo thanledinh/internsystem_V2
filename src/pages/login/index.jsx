@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Form, Input, Button, message, Typography, Card } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,12 +12,13 @@ const { Title } = Typography;
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { redirectPath } = useSelector((state) => state.auth);
 
   const onFinish = async (values) => {
     try {
       await dispatch(login(values)).unwrap();
       message.success("Đăng nhập thành công");
-      navigate("/");
+      navigate(redirectPath || "/");
     } catch (error) {}
   };
 

@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { postRequest } from "@services/api";
 import { message } from "antd";
+import endPoints from "@routers/router";
 
 // Thunk cho đăng nhập
 export const login = createAsyncThunk(
@@ -28,6 +29,7 @@ const authSlice = createSlice({
     role: null,
     isLoading: false,
     error: null,
+    redirectPath: null,
   },
   reducers: {
     logout: (state) => {
@@ -35,6 +37,7 @@ const authSlice = createSlice({
       state.accessToken = null;
       state.refreshToken = null;
       state.role = null;
+      state.redirectPath = null;
       localStorage.clear();
     },
   },
@@ -57,6 +60,24 @@ const authSlice = createSlice({
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
         state.isLoading = false;
+
+        // Set redirectPath based on role
+        switch (data.role) {
+          case "Admin":
+            state.redirectPath = endPoints.DASHBOARD;
+            break;
+          case "Hr":
+            state.redirectPath = `${endPoints.QUANLYINTERN}/${endPoints.DANHSACHINTERN}`;
+            break;
+          case "Mentor":
+            state.redirectPath = endPoints.QUANLYDUAN;
+            break;
+          case "Intern":
+            state.redirectPath = endPoints.QUANLYCONGVIEC;
+            break;
+          default:
+            state.redirectPath = endPoints.ALL;
+        }
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;

@@ -132,7 +132,12 @@ const AdminLayout = () => {
         trigger={null}
         collapsible
         collapsed={collapsed}
-        style={{ overflow: "auto", height: "100vh" }}
+        style={{
+          overflow: "auto",
+          height: "100vh",
+          borderRadius: 20,
+          marginRight: 10,
+        }}
         theme="light"
         width={270}
       >
@@ -162,6 +167,7 @@ const AdminLayout = () => {
             justifyContent: "space-between",
             alignItems: "center",
             padding: "0 16px",
+            borderRadius: 20,
           }}
         >
           <Button
@@ -209,7 +215,7 @@ const AdminLayout = () => {
             padding: 24,
             minHeight: 280,
             background: colorBgContainer,
-            borderRadius: borderRadiusLG,
+            borderRadius: 20,
           }}
         >
           {/* <Outlet />

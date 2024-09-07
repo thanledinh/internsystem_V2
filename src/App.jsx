@@ -19,31 +19,27 @@ function App() {
       <Routes>
         <Route element={<PrivateRoute />}>
           <Route path={endPoints.ALL} element={<AdminLayout />}>
-            <Route path={endPoints.DASHBOARD} element={<Dashboard />} />
-            <Route
-              path={endPoints.QUANLYDUAN}
-              element={<ProjectManagement />}
-            />
-
-            <Route path={endPoints.QUANLYINTERN}>
-              <Route
-                path={endPoints.DANHSACHINTERN}
-                element={<InternManagement />}
-              />
-              <Route path={endPoints.KYTHUCTAP} element={<InternPeriod />} />
+            <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
+              <Route path={endPoints.DASHBOARD} element={<Dashboard />} />
             </Route>
-            <Route
-              path={endPoints.QUANLYVITRI}
-              element={<PositionManagement />}
-            />
-            <Route
-              path={endPoints.QUANLYCONGVIEC}
-              element={<JobManagement />}
-            />
-            <Route
-              path={endPoints.QUANLYNGUOIDUNG}
-              element={<UserManagement />}
-            />
+            <Route element={<PrivateRoute allowedRoles={["Admin", "Mentor"]} />}>
+              <Route path={endPoints.QUANLYDUAN} element={<ProjectManagement />} />
+            </Route>
+            <Route element={<PrivateRoute allowedRoles={["Admin", "Hr"]} />}>
+              <Route path={endPoints.QUANLYINTERN}>
+                <Route path={endPoints.DANHSACHINTERN} element={<InternManagement />} />
+                <Route path={endPoints.KYTHUCTAP} element={<InternPeriod />} />
+              </Route>
+            </Route>
+            <Route element={<PrivateRoute allowedRoles={["Admin", "Hr"]} />}>
+              <Route path={endPoints.QUANLYVITRI} element={<PositionManagement />} />
+            </Route>
+            <Route element={<PrivateRoute allowedRoles={["Admin", "Hr", "Mentor", "Intern"]} />}>
+              <Route path={endPoints.QUANLYCONGVIEC} element={<JobManagement />} />
+            </Route>
+            <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
+              <Route path={endPoints.QUANLYNGUOIDUNG} element={<UserManagement />} />
+            </Route>
           </Route>
         </Route>
         <Route path={endPoints.LOGIN} element={<Login />} />
