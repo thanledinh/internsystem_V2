@@ -1,5 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { deleteRequestParams, deleteRequestParamsV2, getRequest, postRequest, putRequest } from "@services/api";
+import {
+  deleteRequestParams,
+  deleteRequestParamsV2,
+  getRequest,
+  getRequestParams,
+  postRequest,
+  putRequest,
+} from "@services/api";
 import { message } from "antd";
 
 //fetchQuestion
@@ -11,6 +18,40 @@ export const fetchQuestions = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+//fetchRandomQuestions
+export const getRandomQuestion = createAsyncThunk(
+  "question/fetchRandomQuestions",
+  async (params, { rejectWithValue }) => {
+    try {
+      const response = await getRequestParams(
+        "/question/get-random-questions-by-rank",
+        params
+      );
+      message.success("Lấy ngẫu nhiên câu hỏi thánh công");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.errorMessage);
+    }
+  }
+);
+
+//fetchRandomQuestions
+export const getRandomQuestionByRank = createAsyncThunk(
+  "question/fetchRandomQuestionsByRank",
+  async (params, { rejectWithValue }) => {
+    try {
+      const response = await getRequestParams(
+        "/question/get-random-questions-from-random-rank",
+        params
+      );
+      message.success("Lấy ngẫu nhiên câu hỏi thánh công");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data.errorMessage);
     }
   }
 );
@@ -50,13 +91,16 @@ export const createQuestion = createAsyncThunk(
   }
 );
 
-//updateQuestion 
+//updateQuestion
 // Thunk để sửa câu hỏi
 export const updateQuestion = createAsyncThunk(
   "question/updateQuestion",
   async (updatedQuestion, { rejectWithValue }) => {
     try {
-      const response = await putRequest(`/question/update-question/${updatedQuestion.questionId}`, updatedQuestion);
+      const response = await putRequest(
+        `/question/update-question/${updatedQuestion.questionId}`,
+        updatedQuestion
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -72,15 +116,13 @@ export const deleteQuestion = createAsyncThunk(
       const response = await deleteRequestParamsV2(
         "question/delete-question",
         questionId
-      )
+      );
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
-
 
 // Slice cho question
 const questionSlice = createSlice({
@@ -108,6 +150,39 @@ const questionSlice = createSlice({
         state.error = action.payload;
         message.error(action.payload?.message || "Fetch questions failed");
       })
+
+      // Xử lý fetch random questions
+      .addCase(getRandomQuestion.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+
+      .addCase(getRandomQuestion.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.questions = action.payload.data; // Giả sử API trả về data trong payload
+      })
+
+      .addCase(getRandomQuestion.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+
+      // Xử lý fetch random questions by rank
+      .addCase(getRandomQuestionByRank.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+
+      .addCase(getRandomQuestionByRank.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.questions = action.payload.data; // Giả sử API trả về data trong payload
+      })
+
+      .addCase(getRandomQuestionByRank.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+
       // Xử lý cho getQuestionsRank
       .addCase(getQuestionsRank.pending, (state) => {
         state.isLoading = true;

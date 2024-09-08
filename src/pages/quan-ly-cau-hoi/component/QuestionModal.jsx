@@ -49,8 +49,8 @@ const QuestionModal = ({
           rules={[{ required: true, message: "Vui lòng chọn độ khó!" }]}
         >
           <Select placeholder="Chọn độ khó">
-            {questionRanks.map((item) => (
-              <Option key={item.value} value={item.value}>
+            {questionRanks?.map((item) => (
+              <Option key={item.value} value={item.rank}>
                 {item.rank}
               </Option>
             ))}
@@ -62,7 +62,7 @@ const QuestionModal = ({
           rules={[{ required: true, message: "Vui lòng chọn vị trí!" }]}
         >
           <Select placeholder="Chọn vị trí">
-            {positions.map((position) => (
+            {positions?.map((position) => (
               <Option key={position.id} value={position.id}>
                 {position.name}
               </Option>

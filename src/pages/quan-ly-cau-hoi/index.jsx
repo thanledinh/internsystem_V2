@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Table, Button, Space, message, Spin } from "antd";
+import { Table, message, Spin, Input, Button, Select } from "antd"; // Import Input and Button
 import {
   fetchQuestions,
   createQuestion,
@@ -8,19 +8,30 @@ import {
   getQuestionsRank,
   fetchPosition,
   deleteQuestion,
+  getRandomQuestion,
 } from "@redux/features/questionReducer/questionSlice";
 import TableComponent from "@components/button-component/table-component";
 import QuestionModal from "./component/QuestionModal";
+import ButtonsComponent from "@components/button-component";
 
 function QuestionManagement() {
   const dispatch = useDispatch();
-  const { questions, isLoading, error, questionRanks, positions } = useSelector(
-    (state) => state.question
-  );
+  const {
+    questions,
+    isLoading,
+    error,
+    questionRanks,
+    positions,
+    randomQuestions,
+  } = useSelector((state) => state.question);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState(null);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [numberOfQuestions, setNumberOfQuestions] = useState(1); // New state for the number of random questions
+  const [numberOfQuestions2, setNumberOfQuestions2] = useState(1); // New state for the number of random questions
+  const [questionRankValue, setQuestionRankValue] = useState(0); // New state for the number of
 
+  console.log("questionRankValue: " + questionRankValue);
   useEffect(() => {
     dispatch(fetchQuestions());
     dispatch(getQuestionsRank());
@@ -34,16 +45,14 @@ function QuestionManagement() {
   }, [error]);
 
   const handleAdd = () => {
-    setEditingQuestion({});
+    setEditingQuestion(null);
     setIsModalVisible(true);
   };
 
   const handleEdit = (record) => {
     setEditingQuestion({
-      questionId: record.questionId,
-      questionName: record.questionName,
-      questionRank: record.questionRank,
-      positionId: record.positionId,
+      content: record.questionName,
+      ...record,
     });
     setIsModalVisible(true);
   };
@@ -51,7 +60,7 @@ function QuestionManagement() {
   const handleDelete = (id) => {
     dispatch(deleteQuestion(id))
       .then(() => {
-        dispatch(fetchQuestions()); // Fetch lại dữ liệu sau khi xóa
+        dispatch(fetchQuestions());
         message.success("Xóa câu hỏi thành công!");
       })
       .catch((err) => {
@@ -67,11 +76,11 @@ function QuestionManagement() {
     if (editingQuestion) {
       const updateQuestionData = {
         questionId: editingQuestion.questionId,
-        ...values
+        ...values,
       };
       dispatch(updateQuestion(updateQuestionData))
         .then(() => {
-          dispatch(fetchQuestions()); // Fetch lại dữ liệu sau khi cập nhật
+          dispatch(fetchQuestions());
           message.success("Cập nhật câu hỏi thành công!");
         })
         .catch((err) => {
@@ -80,7 +89,7 @@ function QuestionManagement() {
     } else {
       dispatch(createQuestion(values))
         .then(() => {
-          dispatch(fetchQuestions()); // Fetch lại dữ liệu sau khi thêm
+          dispatch(fetchQuestions());
           message.success("Thêm câu hỏi thành công!");
         })
         .catch((err) => {
@@ -88,6 +97,40 @@ function QuestionManagement() {
         });
     }
     setIsModalVisible(false);
+  };
+
+  const handleFetchRandomQuestion = () => {
+    // Pass the number of questions as a parameter to the thunk
+    dispatch(getRandomQuestion({ NumberOfQuestion: numberOfQuestions2 }))
+      .then((result) => {
+        if (result.payload && result.payload.length > 0) {
+          message.info(
+            `Random Questions: ${result.payload
+              .map((q) => q.questionName)
+              .join(", ")}`
+          );
+        }
+      })
+      .catch(() => {
+        message.warning("Failed to fetch random questions.");
+      });
+  };
+
+  const handleFetchRandomQuestionByRank = () => {
+    // Pass the number of questions as a parameter to the thunk
+    dispatch(getRandomQuestion({QuestionRank: questionRankValue ,numberOfQuestion: numberOfQuestions2 }))
+      .then((result) => {
+        if (result.payload && result.payload.length > 0) {
+          message.info(
+            `Random Questions: ${result.payload
+              .map((q) => q.questionName)
+              .join(", ")}`
+          );
+        }
+      })
+      .catch(() => {
+        message.warning("Failed to fetch random questions.");
+      });
   };
 
   const columns = [
@@ -115,12 +158,19 @@ function QuestionManagement() {
       title: "Hành động",
       key: "actions",
       render: (text, record) => (
-        <Space size="middle">
-          <Button onClick={() => handleEdit(record)}>Sửa</Button>
-          <Button danger onClick={() => handleDelete(record.questionId)}>
-            Xóa
-          </Button>
-        </Space>
+        <ButtonsComponent
+          buttons={[
+            {
+              label: "Sửa",
+              onClick: () => handleEdit(record),
+            },
+            {
+              label: "Xóa",
+              onClick: () => handleDelete(record.questionId),
+              danger: true,
+            },
+          ]}
+        />
       ),
     },
   ];
@@ -147,9 +197,17 @@ function QuestionManagement() {
 
   return (
     <div>
-      <Button type="primary" onClick={handleAdd} style={{ marginBottom: 16 }}>
-        Thêm Câu Hỏi
-      </Button>
+      <ButtonsComponent
+        buttons={[
+          {
+            type: "primary",
+            label: "Thêm Câu Hỏi",
+            onClick: handleAdd,
+            style: { marginBottom: 16 },
+          },
+        ]}
+      />
+
       <TableComponent
         columns={columns}
         dataSource={questionsWithKeys}
@@ -167,6 +225,43 @@ function QuestionManagement() {
         questionRanks={questionRanks}
         positions={positions?.items}
       />
+
+      <div style={{display:"flex", justifyContent:"space-around"}}>
+        <div style={{ marginBottom: 16 }}>
+          <Input
+            type="number"
+            min={1}
+            placeholder="Nhập số lượng câu hỏi ngẫu nhiên"
+            value={numberOfQuestions}
+            onChange={(e) => setNumberOfQuestions(Number(e.target.value))}
+            style={{ width: 200, marginRight: 8 }}
+          />
+          <Button type="default" onClick={handleFetchRandomQuestion}>
+            Lấy ngẫu nhiên câu hỏi
+          </Button>
+        </div>
+
+        <div style={{ marginBottom: 16 }}>
+          <Select onChange={(value) => setQuestionRankValue(value)} placeholder="Chọn độ khó">
+            {questionRanks?.map((item) => (
+              <Option key={item.value} value={item.value}>
+                {item.rank}
+              </Option>
+            ))}
+          </Select>
+          <Input
+            type="number"
+            min={1}
+            placeholder="Nhập số lượng câu hỏi ngẫu nhiên"
+            value={numberOfQuestions2}
+            onChange={(e) => setNumberOfQuestions2(Number(e.target.value))}
+            style={{ width: 200, marginRight: 8 }}
+          />
+          <Button type="default" onClick={handleFetchRandomQuestionByRank}>
+            Lấy câu hỏi ngẫu nhiên theo rank
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
