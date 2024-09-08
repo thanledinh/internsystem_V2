@@ -11,6 +11,7 @@ import {
   TeamOutlined,
   SettingOutlined,
   SolutionOutlined,
+  QuestionOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
@@ -101,8 +102,13 @@ const AdminLayout = () => {
           key: `${endPoints.QUANLYINTERN}/${endPoints.KYTHUCTAP}`,
           icon: <CalendarOutlined />,
           label: "Kì thực tập",
-        },
+        },      
       ],
+    },
+    {
+      key: endPoints.QUANLYCAUHOI,
+      icon: <QuestionOutlined />,
+      label: "Quản lí câu hỏi",
     },
     {
       key: endPoints.QUANLYVITRI,

@@ -36,7 +36,7 @@ const TableComponent = ({
   };
 
   const handleRowClick = (record) => {
-    const selectedKey = record.id;
+    const selectedKey = record[rowKey];
     setSelectedRowKeys([selectedKey]);
   };
 

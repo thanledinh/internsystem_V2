@@ -12,6 +12,7 @@ import UserManagement from "@pages/quan-ly-nguoi-dung";
 import Login from "@pages/login";
 import Register from "@pages/register";
 import PrivateRoute from "@components/PrivateRoute";
+import QuestionManagement from '@pages/quan-ly-cau-hoi';
 
 function App() {
   return (
@@ -24,14 +25,16 @@ function App() {
               path={endPoints.QUANLYDUAN}
               element={<ProjectManagement />}
             />
-
             <Route path={endPoints.QUANLYINTERN}>
               <Route
                 path={endPoints.DANHSACHINTERN}
                 element={<InternManagement />}
               />
               <Route path={endPoints.KYTHUCTAP} element={<InternPeriod />} />
+          
+
             </Route>
+            <Route path={endPoints.QUANLYCAUHOI} element={<QuestionManagement />} />
             <Route
               path={endPoints.QUANLYVITRI}
               element={<PositionManagement />}
