@@ -5,7 +5,7 @@ import {
   ReloadOutlined,
 } from "@ant-design/icons";
 import ButtonsComponent from "@components/button-component";
-import TableComponent from "@components/button-component/table-component";
+import TableComponent from "@components/table-component";
 import { fetchListIntern } from "@redux/features/internSlice";
 import { Button, message, Popconfirm, Spin } from "antd";
 import React, { useEffect, useState } from "react";
