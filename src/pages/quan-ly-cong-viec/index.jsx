@@ -5,34 +5,16 @@ import ActionButtons from "./components/Button-Component";
 
 const JobManagement = () => {
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Job Management</h2>
-
+    <div style={{ display: "flex", flexDirection: "column", height: "84vh" }}>
       {/* Tab Component */}
-      <div
-        style={{
-          borderRadius: '10px',
-          boxShadow: '0 4px 8px rgb a(0, 0, 0, 0.1)',
-          padding: '20px',
-          backgroundColor: '#fff',
-          marginBottom: '20px',
-        }}
-      >
+      {/* Main Content: Cards */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "0 20px" }}>
         <TabComponent />
+        <CustomCard />
       </div>
 
-      {/* Main Content: Buttons and Cards together in one box */}
-      <div
-        style={{
-          borderRadius: '10px',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          padding: '20px',
-          backgroundColor: '#fff',
-          width: '100%',
-        }}
-      >
-        {/* Action Buttons and Custom Card inside the same box */}
-        <CustomCard />
+      {/* Action Buttons */}
+      <div style={{ flexShrink: 0 }}>
         <ActionButtons />
       </div>
     </div>

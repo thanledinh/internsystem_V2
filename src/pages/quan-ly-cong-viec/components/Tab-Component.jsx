@@ -1,32 +1,32 @@
-import React from 'react';
-import { Tabs } from 'antd';
+import React from "react";
+import { Tabs } from "antd";
 
 const { TabPane } = Tabs;
 
 const TabComponent = () => {
   return (
-    <div style={{ padding: '20px', background: '#f5f5f5' }}>
+    <div>
       <Tabs
         defaultActiveKey="1"
         centered
         type="line"
         tabBarStyle={{
-          borderRadius: '20px',
-          backgroundColor: '#fff',
-          padding: '10px',
-          display: 'flex',
-          justifyContent: 'center',
+          borderRadius: "20px",
+          backgroundColor: "#fff",
+          padding: "10px",
+          display: "flex",
+          justifyContent: "center",
         }}
-        tabBarGutter={30} 
-        moreIcon={null} 
+        tabBarGutter={30}
+        moreIcon={null}
       >
         <TabPane
           tab={
             <span
               style={{
-                fontSize: '16px',
-                fontWeight: '500',
-                color: '#888',
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "#888",
               }}
             >
               Back-End
@@ -38,9 +38,9 @@ const TabComponent = () => {
           tab={
             <span
               style={{
-                fontSize: '16px',
-                fontWeight: '500',
-                color: '#888',
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "#888",
               }}
             >
               Front-End
@@ -52,9 +52,9 @@ const TabComponent = () => {
           tab={
             <span
               style={{
-                fontSize: '16px',
-                fontWeight: '500',
-                color: '#888',
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "#888",
               }}
             >
               Business Analyst
@@ -66,9 +66,9 @@ const TabComponent = () => {
           tab={
             <span
               style={{
-                fontSize: '16px',
-                fontWeight: '500',
-                color: '#888',
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "#888",
               }}
             >
               Marketing
@@ -80,9 +80,9 @@ const TabComponent = () => {
           tab={
             <span
               style={{
-                fontSize: '16px',
-                fontWeight: '500',
-                color: '#888',
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "#888",
               }}
             >
               Design
