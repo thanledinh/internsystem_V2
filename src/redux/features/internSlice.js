@@ -1,15 +1,76 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getRequestParams } from "@services/api";
+import {
+  getRequestParams,
+  postRequest,
+  putRequest,
+  deleteRequest,
+  getRequest,
+} from "@services/api";
 
-//fetch list intern
+// Fetch list of interns
 export const fetchListIntern = createAsyncThunk(
   "intern/fetchListIntern",
   async ({ pageNumber, pageSize }) => {
-    const params = {
-      pageNumber,
-      pageSize,
-    };
+    const params = { pageNumber, pageSize };
     const response = await getRequestParams("/intern/get-all", params);
+    return response.data;
+  }
+);
+
+// add
+export const addIntern = createAsyncThunk(
+  "intern/addIntern",
+  async (newInternData, { rejectWithValue }) => {
+    try {
+      const response = await postRequest("/intern/create", newInternData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// update
+export const updateIntern = createAsyncThunk(
+  "intern/updateIntern",
+  async ({ id, updatedData }, { rejectWithValue }) => {
+    try {
+      const response = await putRequest(`/intern/update/${id}`, updatedData);
+      return response;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// delete
+export const deleteIntern = createAsyncThunk(
+  "intern/deleteIntern",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await deleteRequest(`/interns/delete/${id}`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+//chỗ này get tạm, sau merge dev xoá
+//get list school
+export const fetchListSchool = createAsyncThunk(
+  "intern/fetchListSchool",
+  async () => {
+    const response = await getRequest("/school/get-all");
+    return response.data;
+  }
+);
+
+//get list internship
+export const fetchListInternship = createAsyncThunk(
+  "intern/fetchListInternship",
+  async () => {
+    const response = await getRequest("/internship/get-all-internship");
     return response.data;
   }
 );
@@ -18,6 +79,8 @@ const internSlice = createSlice({
   name: "intern",
   initialState: {
     listIntern: [],
+    listSchool: [],
+    listInternship: [],
     totalIntern: 0,
     status: "idle",
     error: null,
@@ -25,6 +88,7 @@ const internSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // fetch
       .addCase(fetchListIntern.pending, (state) => {
         state.status = "loading";
       })
@@ -34,6 +98,76 @@ const internSlice = createSlice({
         state.totalIntern = action.payload.total;
       })
       .addCase(fetchListIntern.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // add
+      .addCase(addIntern.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(addIntern.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.listIntern.push(action.payload);
+      })
+      .addCase(addIntern.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // update
+      .addCase(updateIntern.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateIntern.fulfilled, (state, action) => {
+        state.status = "success";
+        const index = state.listIntern.findIndex(
+          (item) => item.id === action.payload.id
+        );
+        state.listIntern[index] = action.payload;
+      })
+      .addCase(updateIntern.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // delete
+      .addCase(deleteIntern.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(deleteIntern.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.listIntern = state.listIntern.filter(
+          (intern) => intern.id !== action.payload
+        );
+      })
+      .addCase(deleteIntern.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      //list school
+      .addCase(fetchListSchool.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchListSchool.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.listSchool = action.payload.data.items;
+      })
+      .addCase(fetchListSchool.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      //list internship
+      .addCase(fetchListInternship.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(fetchListInternship.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.listInternship = action.payload.data;
+      })
+      .addCase(fetchListInternship.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });
