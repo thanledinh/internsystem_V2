@@ -69,11 +69,11 @@ const InternManagement = () => {
   const handleDelete = async (id) => {
     try {
       setLoading(true);
-      await dispatch(deleteIntern(id)); // Use Redux action
+      await dispatch(deleteIntern(id)).unwrap();
       getListIntern();
       setSelectedRowKeys([]);
+      message.success("Xóa thành công");
     } catch (error) {
-      message.error("Xóa intern thất bại");
     } finally {
       setLoading(false);
       setIsDeleteModalVisible(false);
@@ -129,7 +129,7 @@ const InternManagement = () => {
     key: item.id,
     group: item.group,
     fullName: item.firstName + " " + item.lastName,
-    dob: formatDateDisplay(item.birthday), // Format date for display
+    dob: formatDateDisplay(item.birthday),
     phoneNumber: item.phoneNumber,
     position: item.desiredPosition,
     school: item.school?.name,

@@ -14,15 +14,14 @@ const InternForm = ({
 }) => {
   const [form] = Form.useForm();
 
-
-useEffect(()=>{
-  if(visible){
-    form.resetFields()
-    if (editData){
-      form.setFieldsValue(editData);
+  useEffect(() => {
+    if (visible) {
+      form.resetFields();
+      if (editData) {
+        form.setFieldsValue(editData);
+      }
     }
-  }
-},[visible, editData, form])
+  }, [visible, editData, form]);
 
   const handleOk = async () => {
     try {
@@ -32,6 +31,7 @@ useEffect(()=>{
         birthday: formatDateForAPI(values.birthday),
         startDate: formatDateForAPI(values.startDate),
         endDate: formatDateForAPI(values.endDate),
+        gender: Boolean(values.gender),
       };
       await onSubmit(formattedValues);
     } catch (errorInfo) {
@@ -41,10 +41,9 @@ useEffect(()=>{
 
   const handleCancel = () => {
     // nhớ cái này là khi đóng modal sẽ clear form
-    form.resetFields() ;
-    onCancel()
-
-  }
+    form.resetFields();
+    onCancel();
+  };
 
   return (
     <Modal
@@ -89,7 +88,7 @@ useEffect(()=>{
                 { required: true, message: "Please select your birthday!" },
               ]}
             >
-              <DatePicker format="DD-MM-YYYY"/>
+              <DatePicker format="DD-MM-YYYY" />
             </Form.Item>
           </Col>
         </Row>
@@ -232,7 +231,7 @@ useEffect(()=>{
                 { required: true, message: "Please select the end date!" },
               ]}
             >
-              <DatePicker format="DD-MM-YYYY"/>
+              <DatePicker format="DD-MM-YYYY" />
             </Form.Item>
           </Col>
         </Row>

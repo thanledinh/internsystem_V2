@@ -33,12 +33,12 @@ export const addIntern = createAsyncThunk(
 // update
 export const updateIntern = createAsyncThunk(
   "intern/updateIntern",
-  async ({ id, updatedData }, { rejectWithValue }) => {
+  async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await putRequest(`/intern/update/${id}`, updatedData);
-      return response;
+      const response = await putRequest(`/intern/update/${id}`, data);
+      return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
@@ -48,7 +48,7 @@ export const deleteIntern = createAsyncThunk(
   "intern/deleteIntern",
   async (id, { rejectWithValue }) => {
     try {
-      const response = await deleteRequest(`/interns/delete/${id}`);
+      const response = await deleteRequest(`/intern/delete/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -120,11 +120,13 @@ const internSlice = createSlice({
         state.status = "loading";
       })
       .addCase(updateIntern.fulfilled, (state, action) => {
-        state.status = "success";
+        state.status = "succeeded";
         const index = state.listIntern.findIndex(
           (item) => item.id === action.payload.id
         );
-        state.listIntern[index] = action.payload;
+        if (index !== -1) {
+          state.listIntern[index] = action.payload;
+        }
       })
       .addCase(updateIntern.rejected, (state, action) => {
         state.status = "failed";
