@@ -29,7 +29,7 @@ const TabComponent = () => {
                 color: "#888",
               }}
             >
-              Back-End
+              Tất cả
             </span>
           }
           key="1"
@@ -43,7 +43,7 @@ const TabComponent = () => {
                 color: "#888",
               }}
             >
-              Front-End
+              Back-End
             </span>
           }
           key="2"
@@ -57,7 +57,7 @@ const TabComponent = () => {
                 color: "#888",
               }}
             >
-              Business Analyst
+              Front-End
             </span>
           }
           key="3"
@@ -71,7 +71,7 @@ const TabComponent = () => {
                 color: "#888",
               }}
             >
-              Marketing
+              Business Analyst
             </span>
           }
           key="4"
@@ -85,10 +85,24 @@ const TabComponent = () => {
                 color: "#888",
               }}
             >
-              Design
+              Marketing
             </span>
           }
           key="5"
+        />
+        <TabPane
+          tab={
+            <span
+              style={{
+                fontSize: "16px",
+                fontWeight: "500",
+                color: "#888",
+              }}
+            >
+              Design
+            </span>
+          }
+          key="6"
         />
       </Tabs>
     </div>

@@ -1,96 +1,91 @@
-import React, { useEffect, useState } from "react";
-import { Card, Button, Row, Col, Spin } from "antd";
+import React, { useState, useEffect } from "react";
+import { Card, Button, Row, Col, Pagination } from "antd";
 import { FileTextOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchJobs } from "../../../redux/features/job-reducer/jobSlice";
 
 const CustomCard = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { jobs, status, error } = useSelector((state) => state.job);
+  const dispatch = useDispatch();
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6; // 6 cards per page
+
+  // Calculate the starting and ending indices of the jobs for the current page
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "https://api-is.amazingtech.vn/api/job/get-all"
-        );
-        const result = await response.json();
+    dispatch(fetchJobs());
+  }, [dispatch]);
 
-        console.log("Fetched Data:", result);
-
-        if (Array.isArray(result)) {
-          setData(result);
-        } else if (result.data && Array.isArray(result.data)) {
-          setData(result.data);
-        } else {
-          console.error("Unexpected data format:", result);
-        }
-
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (loading) {
-    return (
-      <Spin size="large" style={{ display: "block", margin: "50px auto" }} />
-    );
-  }
-
-  if (!Array.isArray(data)) {
-    return <div>Error: Data is not an array!</div>;
-  }
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <div>
       <Row gutter={[16, 16]} style={{ padding: "20px" }}>
-        {data.map((item, index) => (
-          <Col key={index} xs={24} sm={12} md={8} lg={6}>
-            <Card
-              hoverable
-              cover={
-                <div
-                  style={{
-                    backgroundImage: `url(${
-                      item.image ||
-                      "https://via.placeholder.com/300x150?text=null"
-                    })`, // Placeholder "null" image
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    height: "120px",
-                  }}
-                ></div>
-              }
-              style={{
-                borderRadius: "15px",
-                overflow: "hidden",
-                textAlign: "center",
-                position: "relative",
-              }}
-            >
-              <Meta title={item.name} />
-              <Button
-                type="text"
-                icon={<FileTextOutlined />}
+        {jobs.slice(startIndex, endIndex).map((item, index) => (
+          <Col key={index} xs={24} sm={12} md={8} lg={8}> {/* Keep 3 cards per row */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}> {/* Center the card */}
+              <Card
+                hoverable
+                cover={
+                  <div
+                    style={{
+                      backgroundImage: `url(${item.image || "https://via.placeholder.com/300x150?text=null"})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                      height: "120px",
+                    }}
+                  ></div>
+                }
                 style={{
-                  color: "#aaa",
-                  fontWeight: "500",
-                  position: "absolute",
-                  bottom: "5px",
-                  right: "5px",
-                  fontSize: "12px",
+                  borderRadius: "15px",
+                  overflow: "hidden",
+                  textAlign: "center",
+                  position: "relative",
+                  minHeight: "150px",
+                  paddingBottom: "40px",
+                  maxWidth: "290px",  // Adjust the width of the card to make it smaller
+                  width: "100%",       // Ensure the card is responsive
                 }}
               >
-                Show Questions
-              </Button>
-            </Card>
+                <Meta title={item.name} style={{ paddingBottom: "10px" }} />
+                <Button
+                  type="text"
+                  icon={<FileTextOutlined />}
+                  style={{
+                    color: "#aaa",
+                    fontWeight: "500",
+                    position: "absolute",
+                    bottom: "20px",
+                    right: "5px",
+                    fontSize: "12px",
+                  }}
+                >
+                  Show Questions
+                </Button>
+              </Card>
+            </div>
           </Col>
         ))}
       </Row>
+
+      {/* Pagination Component */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+        <Pagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={jobs.length} // Total number of jobs
+          onChange={handlePageChange}
+          showSizeChanger={false} // Hide page size changer
+        />
+      </div>
     </div>
   );
 };
