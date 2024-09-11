@@ -1,112 +1,45 @@
-import React from "react";
-import { Tabs } from "antd";
+import React from 'react';
+import { Tabs } from 'antd';
 
-const { TabPane } = Tabs;
+const TabsComponent = () => {
+  const onChange = (key) => {
+    console.log(key);
+  };
 
-const TabComponent = () => {
-  return (
-    <div>
-      <Tabs
-        defaultActiveKey="1"
-        centered
-        type="line"
-        tabBarStyle={{
-          borderRadius: "20px",
-          backgroundColor: "#fff",
-          padding: "10px",
-          display: "flex",
-          justifyContent: "center",
-        }}
-        tabBarGutter={30}
-        moreIcon={null}
-      >
-        <TabPane
-          tab={
-            <span
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-                color: "#888",
-              }}
-            >
-              Tất cả
-            </span>
-          }
-          key="1"
-        />
-        <TabPane
-          tab={
-            <span
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-                color: "#888",
-              }}
-            >
-              Back-End
-            </span>
-          }
-          key="2"
-        />
-        <TabPane
-          tab={
-            <span
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-                color: "#888",
-              }}
-            >
-              Front-End
-            </span>
-          }
-          key="3"
-        />
-        <TabPane
-          tab={
-            <span
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-                color: "#888",
-              }}
-            >
-              Business Analyst
-            </span>
-          }
-          key="4"
-        />
-        <TabPane
-          tab={
-            <span
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-                color: "#888",
-              }}
-            >
-              Marketing
-            </span>
-          }
-          key="5"
-        />
-        <TabPane
-          tab={
-            <span
-              style={{
-                fontSize: "16px",
-                fontWeight: "500",
-                color: "#888",
-              }}
-            >
-              Design
-            </span>
-          }
-          key="6"
-        />
-      </Tabs>
-    </div>
-  );
+  const items = [
+    {
+      key: '1',
+      label: <span>Tất cả</span>,
+      children: <div>Content of Tab Pane 1</div>,
+    },
+    {
+      key: '2',
+      label: <span>Back-End</span>,
+      children: <div>Content of Tab Pane 2</div>,
+    },
+    {
+      key: '3',
+      label: <span>Front-End</span>,
+      children: <div>Content of Tab Pane 3</div>,
+    },
+    {
+      key: '4',
+      label: <span>Business Analyst</span>,
+      children: <div>Content of Tab Pane 4</div>,
+    },
+    {
+      key: '5',
+      label: <span>Marketing</span>,
+      children: <div>Content of Tab Pane 5</div>,
+    },
+    {
+      key: '6',
+      label: <span>Design</span>,
+      children: <div>Content of Tab Pane 6</div>,
+    },
+  ];
+
+  return <Tabs defaultActiveKey="1" items={items} onChange={onChange} />;
 };
 
-export default TabComponent;
+export default TabsComponent;
