@@ -1,9 +1,12 @@
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   DeleteOutlined,
   EditOutlined,
   PlusOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
+import { Button, message, Popconfirm, Spin, Checkbox } from "antd";
 import ButtonsComponent from "@components/button-component";
 import TableComponent from "@components/table-component";
 import {
@@ -14,13 +17,10 @@ import {
   fetchListInternship,
   fetchListSchool,
 } from "@redux/features/internSlice";
-import { Button, message, Popconfirm, Spin, Checkbox } from "antd";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-import { formatDateDisplay, formatDateForAPI } from "@utils/dateFormat.js";
+import { formatDateDisplay } from "@utils/dateFormat.js";
 import DeleteConfirmModal from "./components/modals/DeleteConfirmModal";
 import InternForm from "./components/modals/InternForm";
+import InternDetailModal from "./components/modals/InternDetailModal"; // NEW
 
 const InternManagement = () => {
   const dispatch = useDispatch();
@@ -30,6 +30,8 @@ const InternManagement = () => {
   const [editData, setEditData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isSelectAll, setIsSelectAll] = useState(false);
+  const [viewData, setViewData] = useState(null); // NEW
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false); // NEW
 
   const { listIntern, listInternship, listSchool, totalIntern, status } =
     useSelector((state) => state.intern);
@@ -48,13 +50,13 @@ const InternManagement = () => {
     dispatch(fetchListSchool());
   }, [dispatch]);
 
-  // add row
+  // Add row
   const handleAdd = () => {
     setIsModalVisible(true);
     setEditData(null);
   };
 
-  // editable when click 1 row
+  // Editable when click 1 row
   const handleEdit = () => {
     if (selectedRowKeys.length !== 1) {
       message.warning("Vui lòng chọn một hàng cần sửa");
@@ -65,7 +67,7 @@ const InternManagement = () => {
     setEditData(editItem);
   };
 
-  // delete 1 row
+  // Delete 1 row
   const handleDelete = async (id) => {
     try {
       setLoading(true);
@@ -80,7 +82,7 @@ const InternManagement = () => {
     }
   };
 
-  // thêm sửa
+  // Add or edit row
   const handleSubmit = async (values) => {
     setLoading(true);
     try {
@@ -103,9 +105,27 @@ const InternManagement = () => {
     }
   };
 
+  // View intern details
+  const handleView = (intern) => {
+    setViewData(intern); // Store selected intern data for viewing
+    setIsViewModalVisible(true); // Open the modal
+  };
+
+  // Handle Edit from InternDetailModal
+  const handleEditFromDetail = () => {
+    setIsViewModalVisible(false); // Close detail modal
+    setIsModalVisible(true); // Open InternForm modal
+    setEditData(viewData); // Prefill InternForm with selected intern data
+  };
+
+  const handleViewCancel = () => {
+    setIsViewModalVisible(false);
+    setViewData(null);
+  };
+
   const handleCancel = () => {
     setIsModalVisible(false);
-    selectedRowKeys([]);
+    setSelectedRowKeys([]);
   };
 
   const handleResetTable = () => {
@@ -146,13 +166,12 @@ const InternManagement = () => {
 
   const columns = [
     { title: "STT", dataIndex: "stt", key: "stt" },
-    { title: "Intern ID", dataIndex: "key", key: "key" },
-    { title: "Group", dataIndex: "group", key: "group" },
-    { title: "Full Name", dataIndex: "fullName", key: "fullName" },
-    { title: "Date of Birth", dataIndex: "dob", key: "dob" },
-    { title: "Phone Number", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Position", dataIndex: "position", key: "position" },
-    { title: "School", dataIndex: "school", key: "school" },
+    { title: "Nhóm", dataIndex: "group", key: "group" },
+    { title: "Họ và tên", dataIndex: "fullName", key: "fullName" },
+    { title: "Ngày sinh", dataIndex: "dob", key: "dob" },
+    { title: "Số điện thoại", dataIndex: "phoneNumber", key: "phoneNumber" },
+    { title: "Vị trí", dataIndex: "position", key: "position" },
+    { title: "Trường", dataIndex: "school", key: "school" },
     { title: "Email", dataIndex: "email", key: "email" },
     {
       title: "CV",
@@ -160,15 +179,19 @@ const InternManagement = () => {
       key: "cv",
       render: (text) => <a href={text}>Link</a>,
     },
-    { title: "Comments", dataIndex: "comments", key: "comments" },
-    { title: "Role", dataIndex: "role", key: "role" },
-    { title: "Project", dataIndex: "project", key: "project" },
+    { title: "Đánh giá", dataIndex: "comments", key: "comments" },
+    { title: "Vai trò", dataIndex: "role", key: "role" },
+    { title: "Dự án", dataIndex: "project", key: "project" },
     { title: "Mentor", dataIndex: "mentor", key: "mentor" },
-    { title: "Status", dataIndex: "status", key: "status" },
+    { title: "Trạng thái", dataIndex: "status", key: "status" },
     {
-      title: "Report Process",
-      dataIndex: "reportProcess",
-      key: "reportProcess",
+      title: "Xem",
+      key: "view",
+      render: (_, record) => (
+        <Button onClick={() => handleView(record)} type="primary">
+         Xem
+        </Button>
+      ),
     },
   ];
 
@@ -250,7 +273,7 @@ const InternManagement = () => {
         <ButtonsComponent buttons={buttons} />
       </div>
 
-      {/* Modal Thêm Intern */}
+
       <InternForm
         visible={isModalVisible}
         onCancel={handleCancel}
@@ -261,11 +284,19 @@ const InternManagement = () => {
         confirmLoading={loading}
       />
 
-      {/* Modal Xóa Intern */}
+
       <DeleteConfirmModal
         visible={isDeleteModalVisible}
         onCancel={handleCancel}
         onConfirm={() => handleDelete(selectedRowKeys[0])}
+      />
+
+
+      <InternDetailModal
+        visible={isViewModalVisible}
+        onCancel={handleViewCancel}
+        internData={viewData}
+        onEdit={handleEditFromDetail}
       />
     </div>
   );

@@ -40,7 +40,6 @@ const InternForm = ({
   };
 
   const handleCancel = () => {
-    // nhớ cái này là khi đóng modal sẽ clear form
     form.resetFields();
     onCancel();
   };
@@ -60,35 +59,29 @@ const InternForm = ({
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item
-              label="First Name"
+              label="Tên"
               name="firstName"
-              rules={[
-                { required: true, message: "Please input your first name!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
             >
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Last Name"
+              label="Họ"
               name="lastName"
-              rules={[
-                { required: true, message: "Please input your last name!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập họ!" }]}
             >
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Birthday"
+              label="Ngày sinh"
               name="birthday"
-              rules={[
-                { required: true, message: "Please select your birthday!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
             >
-              <DatePicker format="DD-MM-YYYY" />
+              <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>
@@ -96,36 +89,30 @@ const InternForm = ({
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item
-              label="Gender"
+              label="Giới tính"
               name="gender"
-              rules={[
-                { required: true, message: "Please select your gender!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
             >
               <Radio.Group>
-                <Radio value={true}>Male</Radio>
-                <Radio value={false}>Female</Radio>
+                <Radio value={true}>Nam</Radio>
+                <Radio value={false}>Nữ</Radio>
               </Radio.Group>
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Student ID"
+              label="Mã số sinh viên"
               name="studentId"
-              rules={[
-                { required: true, message: "Please input your student ID!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập mã số sinh viên!" }]}
             >
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="School Email"
+              label="Email trường"
               name="schoolEmail"
-              rules={[
-                { required: true, message: "Please input your school email!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập email trường!" }]}
             >
               <Input />
             </Form.Item>
@@ -135,31 +122,24 @@ const InternForm = ({
         <Row gutter={16}>
           <Col span={8}>
             <Form.Item
-              label="Personal Email"
+              label="Email cá nhân"
               name="personalEmail"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your personal email!",
-                },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập email cá nhân!" }]}
             >
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Phone Number"
+              label="Số điện thoại"
               name="phoneNumber"
-              rules={[
-                { required: true, message: "Please input your phone number!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
             >
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Relative Phone" name="relativePhone">
+            <Form.Item label="Số điện thoại khác" name="relativePhone">
               <Input />
             </Form.Item>
           </Col>
@@ -167,22 +147,17 @@ const InternForm = ({
 
         <Row gutter={16}>
           <Col span={8}>
-            <Form.Item label="Address" name="address">
+            <Form.Item label="Địa chỉ" name="address">
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="GPA" name="gpa">
-              <InputNumber
-                min={0}
-                max={4}
-                step={0.1}
-                style={{ width: "100%" }}
-              />
+              <InputNumber min={0} max={4} step={0.1} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="English Level" name="englishLevel">
+            <Form.Item label="Level Tiếng Anh" name="englishLevel">
               <Input />
             </Form.Item>
           </Col>
@@ -190,7 +165,7 @@ const InternForm = ({
 
         <Row gutter={16}>
           <Col span={8}>
-            <Form.Item label="Social Network Link" name="socialNetWorkLink">
+            <Form.Item label="Link Mạng xã hội đang dùng" name="socialNetWorkLink">
               <Input />
             </Form.Item>
           </Col>
@@ -200,7 +175,7 @@ const InternForm = ({
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Major" name="major">
+            <Form.Item label="Chuyên ngành" name="major">
               <Input />
             </Form.Item>
           </Col>
@@ -208,37 +183,33 @@ const InternForm = ({
 
         <Row gutter={16}>
           <Col span={8}>
-            <Form.Item label="Desired Position" name="desiredPosition">
+            <Form.Item label="Vị trí mong muốn" name="desiredPosition">
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Start Date"
+              label="Ngày bắt đầu"
               name="startDate"
-              rules={[
-                { required: true, message: "Please select the start date!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
             >
-              <DatePicker format="DD-MM-YYYY" />
+              <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="End Date"
+              label="Ngày kết thúc"
               name="endDate"
-              rules={[
-                { required: true, message: "Please select the end date!" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc!" }]}
             >
-              <DatePicker format="DD-MM-YYYY" />
+              <DatePicker format="DD-MM-YYYY" style={{ width: "100%" }} />
             </Form.Item>
           </Col>
         </Row>
 
         <Row gutter={16}>
           <Col span={8}>
-            <Form.Item label="School ID" name="schoolId">
+            <Form.Item label="Mã số của trường" name="schoolId">
               <Select placeholder="Chọn trường">
                 {listSchool.map((school) => (
                   <Select.Option key={school.id} value={school.id}>
@@ -249,7 +220,7 @@ const InternForm = ({
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Internship ID" name="internshipId">
+            <Form.Item label="Mã số kỳ thực tập" name="internshipId">
               <Select placeholder="Chọn kỳ thực tập">
                 {listInternship.map((internship) => (
                   <Select.Option key={internship.id} value={internship.id}>
