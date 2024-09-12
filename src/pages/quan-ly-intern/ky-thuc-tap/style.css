@@ -1,71 +1,67 @@
-  .intern-table-container {
-      .ant-table-wrapper {
-        .ant-table {
-          .ant-table-thead {
-            tr {
-              th {
-                background-color: #f8f9fa;
-                text-align: center;
-                font-weight: bold;
-                padding: 12px;
-              }
-            }
-          }
-          .ant-table-tbody {
-            tr {
-              td {
-                text-align: center;
-                vertical-align: middle;
-                padding: 12px;
-              }
-              &:hover {
-                background-color: #f1f1f1;
-              }
-            }
+.intern-table-container {
+  .ant-table-wrapper {
+    .ant-table {
+      /* Đảm bảo bảng không bị tràn ra ngoài khung chứa */
+      width: 100%;
+      table-layout: auto;   
+
+      /* Đảm bảo không có cuộn ngang */
+      overflow-x: auto;
+      
+      .ant-table-thead {
+        tr {
+          th {
+            background-color: #f8f9fa;
+            text-align: center;
+            font-weight: bold;
+            padding: 12px;
           }
         }
       }
-    
-      .table-pagination {
-        margin-top: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    
-        .ant-pagination {
-          margin-left: auto;
-        }
-      }
-    
-      .table-actions {
-        margin-top: 16px;
-        display: flex;
-        justify-content: center;
-        gap: 16px;
-    
-        .action-button {
-          border-radius: 8px;
-          font-weight: bold;
-          padding: 8px 24px;
-       &.edit {
-            background-color: #ffc107;
-            color: white;
+      .ant-table-tbody {
+        tr {
+          td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 12px;
           }
-    
-          &.delete {
-            background-color: #dc3545;
-            color: white;
-          }
-          
-          &.refresh {
-            background-color: #007bff;
-            color: white;
-          }
-          &.create {
-            background-color: #144414;
-            color: white;
+          &:hover {
+            background-color: #f1f1f1;
           }
         }
       }
     }
-    
+  }
+
+  .table-actions {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    .action-button {
+      border-radius: 8px;
+      font-weight: bold;
+      padding: 8px 24px;
+
+      &.edit {
+        background-color: #3816b3;
+        color: white;
+      }
+
+      &.delete {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      &.refresh {
+        background-color: #007bff;
+        color: white;
+      }
+      
+      &.create {
+        background-color: #075e6d;
+        color: white;
+      }
+    }
+  }
+}
