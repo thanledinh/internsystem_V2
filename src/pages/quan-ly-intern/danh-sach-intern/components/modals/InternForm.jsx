@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, InputNumber, Row, Col, Radio, Select } from "antd";
+import { Modal, Form, Input, InputNumber, Row, Col, Radio, Select, Typography } from "antd";
 import DatePicker from "@components/datepicker-component";
 import { formatDateForAPI } from "@utils/dateFormat";
+
+const { Text, Paragraph } = Typography;
 
 const InternForm = ({
   visible,
@@ -53,13 +55,13 @@ const InternForm = ({
       onOk={handleOk}
       cancelText="Huỷ"
       confirmLoading={confirmLoading}
-      width={1200}
+      width={1500}  
     >
       <Form form={form} layout="vertical">
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
             <Form.Item
-              label="Tên"
+              label={<Text strong>Tên</Text>}
               name="firstName"
               rules={[{ required: true, message: "Vui lòng nhập tên!" }]}
             >
@@ -68,7 +70,7 @@ const InternForm = ({
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Họ"
+              label={<Text strong>Họ</Text>}
               name="lastName"
               rules={[{ required: true, message: "Vui lòng nhập họ!" }]}
             >
@@ -77,7 +79,7 @@ const InternForm = ({
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Ngày sinh"
+              label={<Text strong>Ngày sinh</Text>}
               name="birthday"
               rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
             >
@@ -86,10 +88,10 @@ const InternForm = ({
           </Col>
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
             <Form.Item
-              label="Giới tính"
+              label={<Text strong>Giới tính</Text>}
               name="gender"
               rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
             >
@@ -101,7 +103,7 @@ const InternForm = ({
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Mã số sinh viên"
+              label={<Text strong>Mã số sinh viên</Text>}
               name="studentId"
               rules={[{ required: true, message: "Vui lòng nhập mã số sinh viên!" }]}
             >
@@ -110,7 +112,7 @@ const InternForm = ({
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Email trường"
+              label={<Text strong>Email trường</Text>}
               name="schoolEmail"
               rules={[{ required: true, message: "Vui lòng nhập email trường!" }]}
             >
@@ -119,10 +121,10 @@ const InternForm = ({
           </Col>
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
             <Form.Item
-              label="Email cá nhân"
+              label={<Text strong>Email cá nhân</Text>}
               name="personalEmail"
               rules={[{ required: true, message: "Vui lòng nhập email cá nhân!" }]}
             >
@@ -131,7 +133,7 @@ const InternForm = ({
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Số điện thoại"
+              label={<Text strong>Số điện thoại</Text>}
               name="phoneNumber"
               rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
             >
@@ -139,57 +141,57 @@ const InternForm = ({
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Số điện thoại khác" name="relativePhone">
+            <Form.Item label={<Text strong>Số điện thoại khác</Text>} name="relativePhone">
               <Input />
             </Form.Item>
           </Col>
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
-            <Form.Item label="Địa chỉ" name="address">
+            <Form.Item label={<Text strong>Địa chỉ</Text>} name="address">
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="GPA" name="gpa">
+            <Form.Item label={<Text strong>GPA</Text>} name="gpa">
               <InputNumber min={0} max={4} step={0.1} style={{ width: "100%" }} />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Level Tiếng Anh" name="englishLevel">
+            <Form.Item label={<Text strong>Level Tiếng Anh</Text>} name="englishLevel">
               <Input />
             </Form.Item>
           </Col>
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
-            <Form.Item label="Link Mạng xã hội đang dùng" name="socialNetWorkLink">
+            <Form.Item label={<Text strong>Link Mạng xã hội đang dùng</Text>} name="socialNetWorkLink">
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Link CV" name="linkCv">
+            <Form.Item label={<Text strong>Link CV</Text>} name="linkCv">
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Chuyên ngành" name="major">
+            <Form.Item label={<Text strong>Chuyên ngành</Text>} name="major">
               <Input />
             </Form.Item>
           </Col>
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
-            <Form.Item label="Vị trí mong muốn" name="desiredPosition">
+            <Form.Item label={<Text strong>Vị trí mong muốn</Text>} name="desiredPosition">
               <Input />
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Ngày bắt đầu"
+              label={<Text strong>Ngày bắt đầu</Text>}
               name="startDate"
               rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
             >
@@ -198,7 +200,7 @@ const InternForm = ({
           </Col>
           <Col span={8}>
             <Form.Item
-              label="Ngày kết thúc"
+              label={<Text strong>Ngày kết thúc</Text>}
               name="endDate"
               rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc!" }]}
             >
@@ -207,9 +209,9 @@ const InternForm = ({
           </Col>
         </Row>
 
-        <Row gutter={16}>
+        <Row gutter={[32, 16]}>
           <Col span={8}>
-            <Form.Item label="Mã số của trường" name="schoolId">
+            <Form.Item label={<Text strong>Mã số của trường</Text>} name="schoolId">
               <Select placeholder="Chọn trường">
                 {listSchool.map((school) => (
                   <Select.Option key={school.id} value={school.id}>
@@ -220,7 +222,7 @@ const InternForm = ({
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="Mã số kỳ thực tập" name="internshipId">
+            <Form.Item label={<Text strong>Mã số kỳ thực tập</Text>} name="internshipId">
               <Select placeholder="Chọn kỳ thực tập">
                 {listInternship.map((internship) => (
                   <Select.Option key={internship.id} value={internship.id}>

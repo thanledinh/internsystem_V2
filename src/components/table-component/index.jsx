@@ -51,7 +51,7 @@ const TableComponent = ({
   return (
     <Table
       size="small"
-      scroll={{ y: "calc(100vh - 420px)" }}
+      scroll={{ y: "calc(100vh - 420px)", x: "calc(100vw - 100px)" }}
       bordered
       rowKey={rowKey}
       loading={loading}

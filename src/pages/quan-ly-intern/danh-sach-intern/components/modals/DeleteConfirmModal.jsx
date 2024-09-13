@@ -1,10 +1,12 @@
 import React from 'react';
-import { Modal } from 'antd';
+import { Modal, Typography } from 'antd';
+
+const { Text } = Typography;
 
 const DeleteConfirmModal = ({ visible, onCancel, onConfirm }) => {
   return (
     <Modal
-      title="Xác nhận xóa"
+      title={<Text strong>Xác nhận xóa</Text>} 
       visible={visible}
       onCancel={onCancel}
       onOk={onConfirm}
@@ -12,7 +14,7 @@ const DeleteConfirmModal = ({ visible, onCancel, onConfirm }) => {
       cancelText="Hủy"
       okButtonProps={{ danger: true }}
     >
-      <p>Bạn có chắc chắn muốn xóa intern này không? Hành động này không thể hoàn tác.</p>
+      <Text>Bạn có chắc chắn muốn xóa intern này không? Hành động này không thể hoàn tác.</Text>
     </Modal>
   );
 };

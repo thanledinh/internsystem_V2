@@ -1,15 +1,16 @@
 import React from "react";
-import { Modal, Row, Col, Button } from "antd";
+import { Modal, Row, Col, Button, Image, Typography } from "antd"; 
 import { EditOutlined } from "@ant-design/icons";
+
+const { Text, Title, Paragraph } = Typography;
 
 const InternDetailModal = ({ visible, onCancel, internData, onEdit }) => {
   if (!internData) return null;
 
-
   const boxStyle = {
     border: "1px solid #d9d9d9",
-    padding: "3px 12px",
-    borderRadius: "4px",
+    padding: "2px 12px",
+    borderRadius: "10px",
     backgroundColor: "#f5f5f5",
     marginBottom: "16px",
     minHeight: "40px",
@@ -29,64 +30,78 @@ const InternDetailModal = ({ visible, onCancel, internData, onEdit }) => {
     overflow: "hidden",
   };
 
-  const imageStyle = {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-  };
-
   return (
     <Modal
       visible={visible}
-      title="Intern detail"
+      title={<Title level={4}>Intern Detail</Title>}
       onCancel={onCancel}
       footer={[
         <Button key="edit" type="primary" icon={<EditOutlined />} onClick={onEdit}>
           Chỉnh sửa
         </Button>,
       ]}
-      width={1300}
+      width={1500}
     >
-      <Row gutter={16}>
+      <Row gutter={[32, 16]}>
         <Col span={8} style={{ textAlign: "center" }}>
           <div style={imageContainerStyle}>
             {internData.image ? (
-              <img
+              <Image
+                width={150} 
+                height={150}
                 src={internData.image}
                 alt="Intern"
-                style={imageStyle}
+                preview={false} 
               />
             ) : (
-              <span>No Image</span>
+              <Text>No Image</Text>
             )}
           </div>
           <div style={{ marginTop: 20, textAlign: "left" }}>
-            <p><b>Nhóm:</b> {internData.group || "N/A"}</p>
-            <p><b>Kỳ thực tập:</b> {internData.internshipId || "N/A"}</p>
-            <p><b>Ngày bắt đầu:</b> {internData.startDate || "Not available"}</p>
-            <p><b>Ngày kết thúc dự kiến:</b> {internData.endDate || "Not available"}</p>
+            <Paragraph>
+              <Text strong>Nhóm:</Text> {internData.group || "N/A"}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>Kỳ thực tập:</Text> {internData.internshipId || "N/A"}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>Ngày bắt đầu:</Text> {internData.startDate || "Not available"}
+            </Paragraph>
+            <Paragraph>
+              <Text strong>Ngày kết thúc dự kiến:</Text> {internData.endDate || "Not available"}
+            </Paragraph>
           </div>
         </Col>
         <Col span={16}>
-          <Row gutter={16}>
+          <Row gutter={[32, 16]}>
             <Col span={12}>
-              <p><b>Họ và tên:</b></p>
+              <Paragraph>
+                <Text strong>Họ và tên:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.fullName || "N/A"}</div>
             </Col>
             <Col span={12}>
-              <p><b>Số điện thoại:</b></p>
+              <Paragraph>
+                <Text strong>Số điện thoại:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.phoneNumber || "N/A"}</div>
             </Col>
             <Col span={12}>
-              <p><b>Trường:</b></p>
+              <Paragraph>
+                <Text strong>Trường:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.school || "N/A"}</div>
             </Col>
             <Col span={12}>
-              <p><b>Địa chỉ:</b></p>
+              <Paragraph>
+                <Text strong>Địa chỉ:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.address || "Not available"}</div>
             </Col>
             <Col span={12}>
-              <p><b>Link CV:</b></p>
+              <Paragraph>
+                <Text strong>Link CV:</Text>
+              </Paragraph>
               <div style={boxStyle}>
                 {internData.cv ? (
                   <a href={internData.cv} target="_blank" rel="noopener noreferrer">
@@ -98,15 +113,21 @@ const InternDetailModal = ({ visible, onCancel, internData, onEdit }) => {
               </div>
             </Col>
             <Col span={12}>
-              <p><b>Vai trò:</b></p>
+              <Paragraph>
+                <Text strong>Vai trò:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.role || "N/A"}</div>
             </Col>
             <Col span={12}>
-              <p><b>Dự án:</b></p>
+              <Paragraph>
+                <Text strong>Dự án:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.project || "Not assigned"}</div>
             </Col>
             <Col span={12}>
-              <p><b>Mentor:</b></p>
+              <Paragraph>
+                <Text strong>Mentor:</Text>
+              </Paragraph>
               <div style={boxStyle}>{internData.mentor || "Not assigned"}</div>
             </Col>
           </Row>

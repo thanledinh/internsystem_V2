@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   DeleteOutlined,
   EditOutlined,
+  EyeOutlined,
   PlusOutlined,
   ReloadOutlined,
 } from "@ant-design/icons";
-import { Button, message, Popconfirm, Spin, Checkbox } from "antd";
+import { Button, message, Spin, Checkbox, Modal } from "antd";
 import ButtonsComponent from "@components/button-component";
 import TableComponent from "@components/table-component";
 import {
@@ -26,7 +27,7 @@ const InternManagement = () => {
   const dispatch = useDispatch();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Control delete modal
   const [editData, setEditData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isSelectAll, setIsSelectAll] = useState(false);
@@ -67,6 +68,15 @@ const InternManagement = () => {
     setEditData(editItem);
   };
 
+  // Trigger delete modal instead of Popconfirm
+  const handleDeleteClick = () => {
+    if (selectedRowKeys.length === 0) {
+      message.warning("Vui lòng chọn một hàng cần xóa");
+      return;
+    }
+    setIsDeleteModalVisible(true);
+  };
+
   // Delete 1 row
   const handleDelete = async (id) => {
     try {
@@ -78,7 +88,7 @@ const InternManagement = () => {
     } catch (error) {
     } finally {
       setLoading(false);
-      setIsDeleteModalVisible(false);
+      setIsDeleteModalVisible(false); // Close delete modal after deletion
     }
   };
 
@@ -105,17 +115,15 @@ const InternManagement = () => {
     }
   };
 
-  // View intern details
   const handleView = (intern) => {
-    setViewData(intern); // Store selected intern data for viewing
-    setIsViewModalVisible(true); // Open the modal
+    setViewData(intern);
+    setIsViewModalVisible(true);
   };
 
-  // Handle Edit from InternDetailModal
   const handleEditFromDetail = () => {
-    setIsViewModalVisible(false); // Close detail modal
-    setIsModalVisible(true); // Open InternForm modal
-    setEditData(viewData); // Prefill InternForm with selected intern data
+    setIsViewModalVisible(false);
+    setIsModalVisible(true);
+    setEditData(viewData);
   };
 
   const handleViewCancel = () => {
@@ -148,7 +156,7 @@ const InternManagement = () => {
     id: item.id,
     key: item.id,
     group: item.group,
-    fullName: item.firstName + " " + item.lastName,
+    fullName: item.lastName + " " + item.firstName,
     dob: formatDateDisplay(item.birthday),
     phoneNumber: item.phoneNumber,
     position: item.desiredPosition,
@@ -165,31 +173,37 @@ const InternManagement = () => {
   }));
 
   const columns = [
-    { title: "STT", dataIndex: "stt", key: "stt" },
-    { title: "Nhóm", dataIndex: "group", key: "group" },
-    { title: "Họ và tên", dataIndex: "fullName", key: "fullName" },
-    { title: "Ngày sinh", dataIndex: "dob", key: "dob" },
-    { title: "Số điện thoại", dataIndex: "phoneNumber", key: "phoneNumber" },
-    { title: "Vị trí", dataIndex: "position", key: "position" },
-    { title: "Trường", dataIndex: "school", key: "school" },
-    { title: "Email", dataIndex: "email", key: "email" },
+    { title: "STT", dataIndex: "stt", key: "stt", width: 80, ellipsis: true, align: "center" },
+    { title: "Nhóm", dataIndex: "group", key: "group", width: 120, ellipsis: true, align: "center" },
+    { title: "Họ và tên", dataIndex: "fullName", key: "fullName", width: 200, ellipsis: true, align: "center" },
+    { title: "Ngày sinh", dataIndex: "dob", key: "dob", width: 120, ellipsis: true, align: "center" },
+    { title: "Số điện thoại", dataIndex: "phoneNumber", key: "phoneNumber", width: 150, ellipsis: true, align: "center" },
+    { title: "Vị trí", dataIndex: "position", key: "position", width: 150, ellipsis: true, align: "center" },
+    { title: "Trường", dataIndex: "school", key: "school", width: 200, ellipsis: true, align: "center" },
+    { title: "Email", dataIndex: "email", key: "email", width: 200, ellipsis: true, align: "center" },
     {
       title: "CV",
       dataIndex: "cv",
       key: "cv",
+      width: 100,
+      ellipsis: true,
+      align: "center",
       render: (text) => <a href={text}>Link</a>,
     },
-    { title: "Đánh giá", dataIndex: "comments", key: "comments" },
-    { title: "Vai trò", dataIndex: "role", key: "role" },
-    { title: "Dự án", dataIndex: "project", key: "project" },
-    { title: "Mentor", dataIndex: "mentor", key: "mentor" },
-    { title: "Trạng thái", dataIndex: "status", key: "status" },
+    { title: "Đánh giá", dataIndex: "comments", key: "comments", width: 180, ellipsis: true, align: "center" },
+    { title: "Vai trò", dataIndex: "role", key: "role", width: 150, ellipsis: true, align: "center" },
+    { title: "Dự án", dataIndex: "project", key: "project", width: 150, ellipsis: true, align: "center" },
+    { title: "Mentor", dataIndex: "mentor", key: "mentor", width: 150, ellipsis: true, align: "center" },
+    { title: "Trạng thái", dataIndex: "status", key: "status", width: 150, ellipsis: true, align: "center" },
     {
       title: "Xem",
       key: "view",
+      fixed: "right",
+      width: 100,
+      align: "center",
       render: (_, record) => (
-        <Button onClick={() => handleView(record)} type="primary">
-         Xem
+        <Button onClick={() => handleView(record)} type="default" icon={<EyeOutlined />}>
+          Xem
         </Button>
       ),
     },
@@ -203,44 +217,41 @@ const InternManagement = () => {
 
   const buttons = [
     {
-      label: "Làm Mới",
-      type: "primary",
-      icon: <ReloadOutlined />,
-      style: { background: "green", color: "white" },
-      onClick: handleResetTable,
+      label: "Gửi email",
+      type: "default",
+      style: { background: "#6A4CE6", color: "white", borderRadius: "8px", padding: "0 20px" },
+      onClick: () => console.log("Send email clicked"),
     },
     {
-      label: "Thêm mới",
+      label: "Xuất Excel",
+      type: "default",
+      style: { background: "#00C16E", color: "white", borderRadius: "8px", padding: "0 20px" },
+      onClick: () => console.log("Export Excel clicked"),
+    },
+    {
+      label: "Sửa",
+      type: "default",
+      icon: <EditOutlined />,
+      style: selectedRowKeys.length !== 1
+        ? { background: "#FF8C00", color: "white", borderRadius: "8px", padding: "0 20px", opacity: 0.5, pointerEvents: "none" } 
+        : { background: "#FF8C00", color: "white", borderRadius: "8px", padding: "0 20px" },
+      onClick: handleEdit,
+    },
+    {
+      label: "Xóa",
+      type: "default",
+      icon: <DeleteOutlined />,
+      style: selectedRowKeys.length === 0
+        ? { background: "#FF3E30", color: "white", borderRadius: "8px", padding: "0 20px", opacity: 0.5, pointerEvents: "none" } 
+        : { background: "#FF3E30", color: "white", borderRadius: "8px", padding: "0 20px" },
+      onClick: handleDeleteClick,
+    },
+    {
+      label: "Thêm mới Intern",
       type: "primary",
       icon: <PlusOutlined />,
+      style: { background: "#007BFF", color: "white", borderRadius: "8px", padding: "0 20px" },
       onClick: handleAdd,
-    },
-    {
-      label: "Sửa",
-      icon: <EditOutlined />,
-      onClick: handleEdit,
-      disabled: selectedRowKeys.length !== 1, // enable only when select 1 row
-    },
-    {
-      render: () => (
-        <Popconfirm
-          title="Bạn có chắc chắn muốn xóa không?"
-          onConfirm={() => handleDelete(selectedRowKeys[0])}
-          okText="Xóa"
-          cancelText="Hủy"
-        >
-          <Button
-            key="delete"
-            type="default"
-            danger
-            icon={<DeleteOutlined />}
-            loading={loading}
-            disabled={selectedRowKeys.length === 0 || loading} // disable when no row is selected
-          >
-            Xóa
-          </Button>
-        </Popconfirm>
-      ),
     },
   ];
 
@@ -273,7 +284,6 @@ const InternManagement = () => {
         <ButtonsComponent buttons={buttons} />
       </div>
 
-
       <InternForm
         visible={isModalVisible}
         onCancel={handleCancel}
@@ -284,13 +294,12 @@ const InternManagement = () => {
         confirmLoading={loading}
       />
 
-
+      {/* Delete Confirm Modal */}
       <DeleteConfirmModal
         visible={isDeleteModalVisible}
-        onCancel={handleCancel}
+        onCancel={() => setIsDeleteModalVisible(false)}
         onConfirm={() => handleDelete(selectedRowKeys[0])}
       />
-
 
       <InternDetailModal
         visible={isViewModalVisible}
