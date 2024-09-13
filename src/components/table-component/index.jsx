@@ -10,8 +10,9 @@ const TableComponent = ({
   setSelectedRowKeys,
   pagination,
   loading,
+  selectionType = "radio",
 }) => {
-  const handleUncheckRadio = () => {
+  const handleUncheckAll = () => {
     setSelectedRowKeys([]);
   };
   const rowSelection = {
@@ -24,44 +25,46 @@ const TableComponent = ({
         selectedRows
       );
     },
-    type: "radio",
+    type: selectionType, // Use the selectionType prop here
     columnTitle: () => (
-      <Tooltip title="Bỏ chọn">
+      <Tooltip title="Bỏ chọn tất cả">
         <RedoOutlined
           className="icon-reset-rad-btn"
-          onClick={handleUncheckRadio}
+          onClick={handleUncheckAll}
         />
       </Tooltip>
     ),
   };
 
   const handleRowClick = (record) => {
-    const selectedKey = record.id;
-    setSelectedRowKeys([selectedKey]);
+    const selectedKey = record[rowKey];
+    if (selectionType === "radio") {
+      setSelectedRowKeys([selectedKey]);
+    } else {
+      const newSelectedKeys = selectedRowKeys.includes(selectedKey)
+        ? selectedRowKeys.filter((key) => key !== selectedKey)
+        : [...selectedRowKeys, selectedKey];
+      setSelectedRowKeys(newSelectedKeys);
+    }
   };
 
   return (
-    <>
-      <Table
-        size="small"
-        scroll={{ y: "calc(100vh - 420px)" }}
-        bordered
-        rowKey={rowKey}
-        loading={loading}
-        pagination={pagination}
-        rowSelection={rowSelection}
-        dataSource={dataSource}
-        columns={columns}
-        className="custom-scroll-table"
-        // tableLayout="auto"
-        tableLayout="fixed"
-        onRow={(record) => ({
-          onClick: () => {
-            handleRowClick(record);
-          },
-        })}
-      />
-    </>
+    <Table
+      size="small"
+      scroll={{ y: "calc(100vh - 420px)", x: "calc(100vw - 100px)" }}
+      bordered
+      rowKey={rowKey}
+      loading={loading}
+      pagination={pagination}
+      rowSelection={rowSelection}
+      dataSource={dataSource}
+      columns={columns}
+      className="custom-scroll-table"
+      tableLayout="fixed"
+      onRow={(record) => ({
+        onClick: () => handleRowClick(record),
+      })}
+    />
   );
 };
 
