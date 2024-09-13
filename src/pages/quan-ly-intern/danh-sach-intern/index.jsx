@@ -5,7 +5,8 @@ import {
   EditOutlined,
   EyeOutlined,
   PlusOutlined,
-  ReloadOutlined,
+  SendOutlined,
+  DownloadOutlined
 } from "@ant-design/icons";
 import { Button, message, Spin, Checkbox, Modal } from "antd";
 import ButtonsComponent from "@components/button-component";
@@ -219,13 +220,15 @@ const InternManagement = () => {
     {
       label: "Gửi email",
       type: "default",
-      style: { background: "#6A4CE6", color: "white", borderRadius: "8px", padding: "0 20px" },
+      icon: <SendOutlined />,
+      style: { background: "#6A4CE6", color: "white"},
       onClick: () => console.log("Send email clicked"),
     },
     {
       label: "Xuất Excel",
       type: "default",
-      style: { background: "#00C16E", color: "white", borderRadius: "8px", padding: "0 20px" },
+      icon: <DownloadOutlined />,
+      style: { background: "#00C16E", color: "white"},
       onClick: () => console.log("Export Excel clicked"),
     },
     {
@@ -233,8 +236,8 @@ const InternManagement = () => {
       type: "default",
       icon: <EditOutlined />,
       style: selectedRowKeys.length !== 1
-        ? { background: "#FF8C00", color: "white", borderRadius: "8px", padding: "0 20px", opacity: 0.5, pointerEvents: "none" } 
-        : { background: "#FF8C00", color: "white", borderRadius: "8px", padding: "0 20px" },
+        ? { background: "#FF8C00", color: "white", opacity: 0.45, pointerEvents: "none" }
+        : { background: "#FF8C00", color: "white" },
       onClick: handleEdit,
     },
     {
@@ -242,15 +245,15 @@ const InternManagement = () => {
       type: "default",
       icon: <DeleteOutlined />,
       style: selectedRowKeys.length === 0
-        ? { background: "#FF3E30", color: "white", borderRadius: "8px", padding: "0 20px", opacity: 0.5, pointerEvents: "none" } 
-        : { background: "#FF3E30", color: "white", borderRadius: "8px", padding: "0 20px" },
+        ? { background: "#FF3E30", color: "white", opacity: 0.4, pointerEvents: "none" }
+        : { background: "#FF3E30", color: "white"},
       onClick: handleDeleteClick,
     },
     {
-      label: "Thêm mới Intern",
+      label: "Thêm Intern",
       type: "primary",
       icon: <PlusOutlined />,
-      style: { background: "#007BFF", color: "white", borderRadius: "8px", padding: "0 20px" },
+      style: { background: "#007BFF", color: "white"},
       onClick: handleAdd,
     },
   ];
