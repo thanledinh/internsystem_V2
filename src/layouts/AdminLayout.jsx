@@ -53,13 +53,20 @@ const AdminLayout = () => {
 
   useEffect(() => {
     const currentPath = location.pathname;
-    dispatch(setActiveKey(currentPath));
+    let activeKey = currentPath;
+
+    // Check if the current path is a job detail page
+    if (currentPath.startsWith(endPoints.QUANLYCONGVIEC) && currentPath !== endPoints.QUANLYCONGVIEC) {
+      activeKey = endPoints.QUANLYCONGVIEC;
+    }
+
+    dispatch(setActiveKey(activeKey));
 
     // Find the parent key if it's a child route
     const parentKey = menuItems.find(
       (item) =>
         item.children &&
-        item.children.some((child) => child.key === currentPath)
+        item.children.some((child) => child.key === activeKey)
     )?.key;
 
     if (parentKey) {

@@ -4,10 +4,12 @@ import { FileTextOutlined } from "@ant-design/icons";
 import Meta from "antd/es/card/Meta";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchJobs } from "../../../redux/features/job-reducer/jobSlice";
+import { useNavigate } from 'react-router-dom';
 
 const CustomCard = () => {
   const { jobs, status, error } = useSelector((state) => state.job);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +26,10 @@ const CustomCard = () => {
   // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handleShowQuestions = (id, name) => {
+    navigate(`/job-management/${id}?name=${encodeURIComponent(name)}`);
   };
 
   return (
@@ -59,6 +65,7 @@ const CustomCard = () => {
                 <Button
                   type="text"
                   icon={<FileTextOutlined />}
+                  onClick={() => handleShowQuestions(item.id, item.name)}
                   style={{
                     color: "#aaa",
                     fontWeight: "500",
