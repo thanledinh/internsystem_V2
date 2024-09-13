@@ -5,6 +5,7 @@ import { combineReducers } from "redux";
 import sidebarReducer from "./features/sidebarMenuSlice";
 import authReducer from "./features/authReducer/authSlice";
 import internReducer from "./features/internSlice";
+import jobReducer from "./features/job-reducer/jobSlice";
 const persistConfig = {
   key: "root",
   storage,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   sidebar: sidebarReducer,
   auth: authReducer,
   intern: internReducer,
+  job: jobReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
