@@ -1,0 +1,50 @@
+name: Develop Deploy to VPS
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+      - dev
+      - staging
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Setup code
+        uses: actions/checkout@v4
+      
+      # Build Docker image và deploy lên VPS
+      - name: Deploy to VPS    
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            IMAGE="${{ vars.CONTAINER_NAME_PRODUCTION }}"
+            ENVIRONMENT="${{ vars.VERSION_PRODUCTION }}"
+            PORT="${{ vars.CONTAINER_PORT_PRODUCTION }}"
+          elif [ "${{ github.ref }}" == "refs/heads/dev" ]; then
+            IMAGE="${{ vars.CONTAINER_NAME_DEV }}"
+            ENVIRONMENT="${{ vars.VERSION_DEV }}"
+            PORT="${{ vars.CONTAINER_PORT_DEV }}"
+          else
+            IMAGE="${{ vars.CONTAINER_NAME_STAGING }}"
+            ENVIRONMENT="${{ vars.VERSION_STAGING }}"
+            PORT="${{ vars.CONTAINER_PORT_STAGING }}"
+          fi
+          
+          # Kết nối tới VPS qua SSH và deploy
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} << EOF
+            ls
+            git fetch
+            git pull
+            echo "ENVIRONMENT is set to: $ENVIRONMENT"
+            echo "IMAGE is set to: $IMAGE"
+            docker rm -f $IMAGE || true
+            docker build -t $IMAGE .
+            docker run -d -p $PORT:${{ vars.PORT }} --name $IMAGE -v image-intern-system:/app/wwwroot -e ENVIRONMENT=$ENVIRONMENT $IMAGE
+EOF
