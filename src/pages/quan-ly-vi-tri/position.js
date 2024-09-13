@@ -1,4 +1,4 @@
-import { getRequest, postRequest, putRequest, deleteRequest } from "../../services/api" ; // Import the base request functions
+import { getRequest, postRequest, putRequest, deleteRequest } from "../../services/api" ; 
 
 // Fetch all positions
 export const fetchAllPositions = async () => {
