@@ -19,9 +19,9 @@ jobs:
     steps:
       - name: Setup code
         uses: actions/checkout@v4
-      
+
       # Build Docker image và deploy lên VPS
-      - name: Deploy to VPS    
+      - name: Deploy to VPS
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
             IMAGE="${{ vars.CONTAINER_NAME_PRODUCTION }}"
@@ -36,7 +36,7 @@ jobs:
             ENVIRONMENT="${{ vars.VERSION_STAGING }}"
             PORT="${{ vars.CONTAINER_PORT_STAGING }}"
           fi
-          
+
           # Kết nối tới VPS qua SSH và deploy
           sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} << EOF
             ls
@@ -47,4 +47,3 @@ jobs:
             docker rm -f $IMAGE || true
             docker build -t $IMAGE .
             docker run -d -p $PORT:${{ vars.PORT }} --name $IMAGE -v image-intern-system:/app/wwwroot -e ENVIRONMENT=$ENVIRONMENT $IMAGE
-EOF
