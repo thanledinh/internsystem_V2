@@ -20,7 +20,6 @@ jobs:
       - name: Setup code
         uses: actions/checkout@v4
 
-      # Build Docker image và deploy lên VPS
       - name: Deploy to VPS
         run: |
           if [ "${{ github.ref }}" == "refs/heads/main" ]; then
@@ -36,14 +35,12 @@ jobs:
             ENVIRONMENT="${{ vars.VERSION_STAGING }}"
             PORT="${{ vars.CONTAINER_PORT_STAGING }}"
           fi
-
-          # Kết nối tới VPS qua SSH và deploy
-          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} << EOF
-            ls
-            git fetch
-            git pull
-            echo "ENVIRONMENT is set to: $ENVIRONMENT"
-            echo "IMAGE is set to: $IMAGE"
-            docker rm -f $IMAGE || true
-            docker build -t $IMAGE .
-            docker run -d -p $PORT:${{ vars.PORT }} --name $IMAGE -v image-intern-system:/app/wwwroot -e ENVIRONMENT=$ENVIRONMENT $IMAGE
+          sshpass -p "${{ secrets.SERVER_PASSWORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}
+          ls
+          git fetch
+          git pull
+          echo "ENVIRONMENT is set to: $ENVIRONMENT"
+          echo "IMAGE is set to: $IMAGE"
+          docker rm -f $IMAGE
+          docker build -t $IMAGE . 
+          docker run -d -p $PORT:${{ vars.PORT }} --name $IMAGE -v image-intern-system:/app/wwwroot -e ENVIRONMENT=$ENVIRONMENT $IMAGE
