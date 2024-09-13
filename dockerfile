@@ -1,5 +1,5 @@
 # Sử dụng base image Node.js với phiên bản 20-alpine nhẹ
-FROM node:20-alpine
+FROM node:20
 
 # Đặt thư mục làm việc trong container
 WORKDIR /app
