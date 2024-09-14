@@ -56,7 +56,10 @@ const AdminLayout = () => {
     let activeKey = currentPath;
 
     // Check if the current path is a job detail page
-    if (currentPath.startsWith(endPoints.QUANLYCONGVIEC) && currentPath !== endPoints.QUANLYCONGVIEC) {
+    if (
+      currentPath.startsWith(endPoints.QUANLYCONGVIEC) &&
+      currentPath !== endPoints.QUANLYCONGVIEC
+    ) {
       activeKey = endPoints.QUANLYCONGVIEC;
     }
 
@@ -65,8 +68,7 @@ const AdminLayout = () => {
     // Find the parent key if it's a child route
     const parentKey = menuItems.find(
       (item) =>
-        item.children &&
-        item.children.some((child) => child.key === activeKey)
+        item.children && item.children.some((child) => child.key === activeKey)
     )?.key;
 
     if (parentKey) {
@@ -88,26 +90,31 @@ const AdminLayout = () => {
       key: endPoints.DASHBOARD,
       icon: <DashboardOutlined />,
       label: "Dashboard",
+      allowedRoles: ["Admin"],
     },
     {
       key: endPoints.QUANLYDUAN,
       icon: <ScheduleOutlined />,
       label: "Quản lý dự án",
+      allowedRoles: ["Admin", "Mentor", "Hr", "Intern"],
     },
     {
       key: endPoints.QUANLYINTERN,
       icon: <TeamOutlined />,
       label: "Quản lý Intern",
+      allowedRoles: ["Admin", "Hr"],
       children: [
         {
           key: `${endPoints.QUANLYINTERN}/${endPoints.DANHSACHINTERN}`,
           icon: <UsergroupAddOutlined />,
           label: "Danh sách Intern",
+          allowedRoles: ["Admin", "Hr"],
         },
         {
           key: `${endPoints.QUANLYINTERN}/${endPoints.KYTHUCTAP}`,
           icon: <CalendarOutlined />,
           label: "Kì thực tập",
+          allowedRoles: ["Admin", "Hr"],
         },
       ],
     },
@@ -115,18 +122,31 @@ const AdminLayout = () => {
       key: endPoints.QUANLYVITRI,
       icon: <SettingOutlined />,
       label: "Quản lý vị trí",
+      allowedRoles: ["Admin", "Hr"],
     },
     {
       key: endPoints.QUANLYCONGVIEC,
       icon: <SolutionOutlined />,
       label: "Quản lý công việc",
+      allowedRoles: ["Admin", "Mentor", "Intern"],
     },
     {
       key: endPoints.QUANLYNGUOIDUNG,
       icon: <UsergroupAddOutlined />,
       label: "Quản lý người dùng",
+      allowedRoles: ["Admin"],
     },
   ];
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (item.children) {
+      item.children = item.children.filter((child) =>
+        child.allowedRoles.includes(role)
+      );
+      return item.children.length > 0;
+    }
+    return item.allowedRoles.includes(role);
+  });
 
   const handleLogout = () => {
     dispatch(logout());
@@ -163,7 +183,7 @@ const AdminLayout = () => {
           openKeys={openKeys}
           onClick={handleMenuClick}
           onOpenChange={onOpenChange}
-          items={menuItems}
+          items={filteredMenuItems}
         />
       </Sider>
       <Layout>

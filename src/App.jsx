@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import AdminLayout from "./layouts/AdminLayout";
 import endPoints from "./routers/router";
@@ -13,6 +13,7 @@ import Login from "@pages/login";
 import Register from "@pages/register";
 import PrivateRoute from "@components/PrivateRoute";
 import ListQuestion from "@pages/quan-ly-cong-viec/components/ListQuestion";
+import LogoutAndRedirect from "@components/LogoutAndRedirect";
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
             <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
               <Route path={endPoints.DASHBOARD} element={<Dashboard />} />
             </Route>
-            <Route element={<PrivateRoute allowedRoles={["Admin", "Mentor"]} />}>
+            <Route element={<PrivateRoute allowedRoles={["Admin", "Mentor", "Hr", "Intern"]} />}>
               <Route path={endPoints.QUANLYDUAN} element={<ProjectManagement />} />
             </Route>
             <Route element={<PrivateRoute allowedRoles={["Admin", "Hr"]} />}>
@@ -35,17 +36,18 @@ function App() {
             <Route element={<PrivateRoute allowedRoles={["Admin", "Hr"]} />}>
               <Route path={endPoints.QUANLYVITRI} element={<PositionManagement />} />
             </Route>
-            <Route element={<PrivateRoute allowedRoles={["Admin", "Hr", "Mentor", "Intern"]} />}>
+            <Route element={<PrivateRoute allowedRoles={["Admin", "Mentor", "Intern"]} />}>
               <Route path={endPoints.QUANLYCONGVIEC} element={<JobManagement />} />
+              <Route path={`${endPoints.QUANLYCONGVIEC}/:id`} element={<ListQuestion />} />
             </Route>
             <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
               <Route path={endPoints.QUANLYNGUOIDUNG} element={<UserManagement />} />
             </Route>
-            <Route path={`${endPoints.QUANLYCONGVIEC}/:id`} element={<ListQuestion />} />
           </Route>
         </Route>
         <Route path={endPoints.LOGIN} element={<Login />} />
         <Route path={endPoints.REGISTER} element={<Register />} />
+        <Route path="*" element={<LogoutAndRedirect />} />
       </Routes>
     </BrowserRouter>
   );
