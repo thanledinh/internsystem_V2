@@ -18,4 +18,8 @@ export default defineConfig({
       "@routers": path.resolve(__dirname, "./src/routers"),
     },
   },
+  server: {
+    host: "0.0.0.0",
+    port: 4173,
+  },
 });

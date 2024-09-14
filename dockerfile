@@ -1,28 +1,23 @@
-# Sử dụng base image Node.js với phiên bản 20
+# Use the official Node.js 20 image
 FROM node:20
 
-# Đặt thư mục làm việc trong container
+# Set the working directory in the container
 WORKDIR /app
 
-# Không cần cài đặt Yarn nếu đã có sẵn trong image node:20
-# Sao chép file package.json và yarn.lock (nếu có) vào container
-COPY package.json yarn.lock* ./
+# Copy package.json and yarn.lock into the container
+COPY package.json yarn.lock ./
 
-# Cài đặt các dependencies bằng Yarn với frozen-lockfile để đảm bảo không thay đổi lockfile
-RUN yarn install --frozen-lockfile
+# Install dependencies
+RUN yarn install --force
 
-# Sao chép toàn bộ mã nguồn vào container
+# Copy all source files to the container
 COPY . .
 
-# Build dự án cho production
+# Build the app using Vite
 RUN yarn build
 
-# Đặt thư mục làm việc cho dist để chuẩn bị chạy ứng dụng sau khi build
-WORKDIR /app/dist
-
-# Mở cổng 4173
+# Expose the port the app will run on
 EXPOSE 4173
 
-# Chạy ứng dụng bằng lệnh yarn preview
-CMD ["yarn", "preview", "--host"]
-
+# Command to run the app in preview mode
+CMD ["yarn", "preview"]

@@ -7,9 +7,7 @@ node_modules
 # Ignore build output directory
 dist
 
-# Ignore local environment file
-.env
-.env.local
+
 
 # Ignore Docker-related files
 Dockerfile
