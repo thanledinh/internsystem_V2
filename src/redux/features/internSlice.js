@@ -167,7 +167,7 @@ const internSlice = createSlice({
       })
       .addCase(fetchListInternship.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.listInternship = action.payload.data;
+        state.listInternship = action.payload.data.items;
       })
       .addCase(fetchListInternship.rejected, (state, action) => {
         state.status = "failed";
