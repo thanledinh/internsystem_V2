@@ -11,6 +11,7 @@ const endPoints = {
   QUANLYCONGVIEC: "/job-management",
   QUANLYCONGVIEC_DETAIL: "/job-management/:id",
   QUANLYNGUOIDUNG: "/user-management",
+  QUANLYCAUHOI:"/question-management",
 };
 
 export default endPoints;

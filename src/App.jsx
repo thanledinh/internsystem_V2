@@ -14,6 +14,7 @@ import Register from "@pages/register";
 import PrivateRoute from "@components/PrivateRoute";
 import ListQuestion from "@pages/quan-ly-cong-viec/components/ListQuestion";
 import LogoutAndRedirect from "@components/LogoutAndRedirect";
+import QuestionManagement from '@pages/quan-ly-cau-hoi';
 
 function App() {
   return (
@@ -43,6 +44,8 @@ function App() {
             <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
               <Route path={endPoints.QUANLYNGUOIDUNG} element={<UserManagement />} />
             </Route>
+            <Route path={endPoints.QUANLYCAUHOI} element={<QuestionManagement />} />
+           
           </Route>
         </Route>
         <Route path={endPoints.LOGIN} element={<Login />} />

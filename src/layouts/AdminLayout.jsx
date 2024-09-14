@@ -11,6 +11,7 @@ import {
   TeamOutlined,
   SettingOutlined,
   SolutionOutlined,
+  QuestionOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
@@ -117,6 +118,11 @@ const AdminLayout = () => {
           allowedRoles: ["Admin", "Hr"],
         },
       ],
+    },
+    {
+      key: endPoints.QUANLYCAUHOI,
+      icon: <QuestionOutlined />,
+      label: "Quản lí câu hỏi",
     },
     {
       key: endPoints.QUANLYVITRI,

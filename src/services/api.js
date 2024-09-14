@@ -39,6 +39,13 @@ const deleteRequestParams = async (url, params) => {
   return res;
 };
 
+const deleteRequestParamsV2 = async (url, params) => {
+
+  const fullUrl = `${url}/${params}`;
+  const res = await axiosClientVer2.delete(fullUrl);
+  return res;
+};
+
 // [PUT]
 const putRequest = async (url, payload) => {
   const res = await axiosClientVer2.put(`${url}`, payload, {
@@ -142,6 +149,7 @@ export {
   postRequestMultipartFormData,
   deleteRequest,
   deleteRequestParams,
+  deleteRequestParamsV2,
   putRequest,
   putRequestParams,
   putRequestMultipartFormData,

@@ -6,6 +6,8 @@ import sidebarReducer from "./features/sidebarMenuSlice";
 import authReducer from "./features/authReducer/authSlice";
 import internReducer from "./features/internSlice";
 import jobReducer from "./features/job-reducer/jobSlice";
+import questionReducer from "./features/questionReducer/questionSlice";
+
 const persistConfig = {
   key: "root",
   storage,
@@ -17,6 +19,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   intern: internReducer,
   job: jobReducer,
+  question: questionReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
