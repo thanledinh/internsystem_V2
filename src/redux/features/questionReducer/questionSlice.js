@@ -69,7 +69,7 @@ export const getQuestionsRank = createAsyncThunk(
 export const fetchPosition = createAsyncThunk(
   "positions/fetchPosition",
   async () => {
-    const response = await getRequest("position/get-all-position");
+    const response = await getRequest("position/get-position");
     return response.data.data;
   }
 );
