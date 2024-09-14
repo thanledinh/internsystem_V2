@@ -20,18 +20,26 @@ jobs:
       - name: Setup code
         uses: actions/checkout@v4
 
-      - name: Set Docker env
+      - name: update env
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "${{ secrets.ENV_FILE_PRODUCTION }}" > .env
-            echo "TAGS=${{ vars.VERSION_PRODUCTION }}" >> $GITHUB_ENV
+            echo "${{ secrets.ENV_FILE_PROD }}" > .env
 
           elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
             echo "${{ secrets.ENV_FILE_DEV }}" > .env
+        
+          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+            echo "${{ secrets.ENV_FILE_STAGING }}" > .env
+          fi
+      - name: Set Docker env
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "TAGS=${{ vars.VERSION_PRODUCTION }}" >> $GITHUB_ENV
+
+          elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
             echo "TAGS=${{ vars.VERSION_DEV }}" >> $GITHUB_ENV
 
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-            echo "${{ secrets.ENV_FILE_STAGING }}" > .env
             echo "TAGS=${{ vars.VERSION_STAGING }}" >> $GITHUB_ENV
 
           fi
@@ -49,28 +57,24 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/staging'
     needs: build
     runs-on: ubuntu-latest
-    # environment: $ENVIRONMENT
+    timeout-minutes: 30
     steps:
       - name: Set Docker Registry
-        # id: set-env
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "DOCKER_REGISTRY=${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ vars.VERSION_PRODUCTION }}" >> $GITHUB_ENV
             echo "CONTAINER_NAME=${{ vars.CONTAINER_NAME_PRODUCTION }}" >> $GITHUB_ENV
             echo "CONTAINER_PORT=${{ vars.CONTAINER_PORT_PRODUCTION }}" >> $GITHUB_ENV
-            echo "VOLUME=${{ vars.VOLUME_UPLOAD_FILE_PRODUCTION }}" >> $GITHUB_ENV
 
           elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
             echo "DOCKER_REGISTRY=${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ vars.VERSION_DEV }}" >> $GITHUB_ENV
             echo "CONTAINER_NAME=${{ vars.CONTAINER_NAME_DEV }}" >> $GITHUB_ENV
             echo "CONTAINER_PORT=${{ vars.CONTAINER_PORT_DEV }}" >> $GITHUB_ENV
-            echo "VOLUME=${{ vars.VOLUME_UPLOAD_FILE_DEV }}" >> $GITHUB_ENV
 
           elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
             echo "DOCKER_REGISTRY=${{ vars.CONTAINER_REGISTRY }}/${{ vars.IMAGE_NAME }}:${{ vars.VERSION_STAGING }}" >> $GITHUB_ENV
             echo "CONTAINER_NAME=${{ vars.CONTAINER_NAME_STAGING }}" >> $GITHUB_ENV           
             echo "CONTAINER_PORT=${{ vars.CONTAINER_PORT_STAGING }}" >> $GITHUB_ENV
-            echo "VOLUME=${{ vars.VOLUME_UPLOAD_FILE_STAGING }}" >> $GITHUB_ENV
 
           fi    
       - name: Deploy package to VPS
@@ -85,12 +89,4 @@ jobs:
             docker rm ${{ env.CONTAINER_NAME }}  || true
             docker rmi ${{ env.DOCKER_REGISTRY }}  || true
             docker pull ${{ env.DOCKER_REGISTRY }}
-            if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-              ENVIRONMENT='production'
-             elif [[ "${{ github.ref }}" == "refs/heads/dev" ]]; then
-              ENVIRONMENT='development'
-            elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
-              ENVIRONMENT='staging'
-            fi
-            echo "ENVIRONMENT=$ENVIRONMENT"
-            docker run -d --name ${{ env.CONTAINER_NAME }} --restart unless-stopped -v ${{ env.VOLUME }}:${{ vars.UPLOAD_FOLDER }} -p ${{ env.CONTAINER_PORT }}:${{ vars.PORT }}  ${{ env.DOCKER_REGISTRY }}
+            docker run -d --name ${{ env.CONTAINER_NAME }} --restart unless-stopped -p ${{ env.CONTAINER_PORT }}:${{ vars.PORT }} ${{ env.DOCKER_REGISTRY }}
