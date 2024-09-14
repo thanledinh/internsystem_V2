@@ -144,15 +144,24 @@ const AdminLayout = () => {
     },
   ];
 
-  const filteredMenuItems = menuItems.filter((item) => {
-    if (item.children) {
-      item.children = item.children.filter((child) =>
-        child.allowedRoles.includes(role)
-      );
-      return item.children.length > 0;
-    }
-    return item.allowedRoles.includes(role);
-  });
+  const filteredMenuItems = menuItems
+    .filter((item) => {
+      if (item.children) {
+        item.children = item.children.filter((child) =>
+          child.allowedRoles?.includes(role)
+        );
+        return item.children.length > 0;
+      }
+      return item.allowedRoles?.includes(role);
+    })
+    .map(({ allowedRoles, ...item }) => {
+      if (item.children) {
+        item.children = item.children.map(
+          ({ allowedRoles, ...child }) => child
+        );
+      }
+      return item;
+    });
 
   const handleLogout = () => {
     dispatch(logout());

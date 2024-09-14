@@ -14,7 +14,7 @@ import Register from "@pages/register";
 import PrivateRoute from "@components/PrivateRoute";
 import ListQuestion from "@pages/quan-ly-cong-viec/components/ListQuestion";
 import LogoutAndRedirect from "@components/LogoutAndRedirect";
-import QuestionManagement from '@pages/quan-ly-cau-hoi';
+import QuestionManagement from "@pages/quan-ly-cau-hoi";
 
 function App() {
   return (
@@ -25,27 +25,63 @@ function App() {
             <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
               <Route path={endPoints.DASHBOARD} element={<Dashboard />} />
             </Route>
-            <Route element={<PrivateRoute allowedRoles={["Admin", "Mentor", "Hr", "Intern"]} />}>
-              <Route path={endPoints.QUANLYDUAN} element={<ProjectManagement />} />
+            <Route
+              element={
+                <PrivateRoute
+                  allowedRoles={["Admin", "Mentor", "Hr", "Intern"]}
+                />
+              }
+            >
+              <Route
+                path={endPoints.QUANLYDUAN}
+                element={<ProjectManagement />}
+              />
             </Route>
             <Route element={<PrivateRoute allowedRoles={["Admin", "Hr"]} />}>
               <Route path={endPoints.QUANLYINTERN}>
-                <Route path={endPoints.DANHSACHINTERN} element={<InternManagement />} />
+                <Route
+                  path={endPoints.DANHSACHINTERN}
+                  element={<InternManagement />}
+                />
                 <Route path={endPoints.KYTHUCTAP} element={<InternPeriod />} />
               </Route>
             </Route>
             <Route element={<PrivateRoute allowedRoles={["Admin", "Hr"]} />}>
-              <Route path={endPoints.QUANLYVITRI} element={<PositionManagement />} />
+              <Route
+                path={endPoints.QUANLYVITRI}
+                element={<PositionManagement />}
+              />
             </Route>
-            <Route element={<PrivateRoute allowedRoles={["Admin", "Mentor", "Intern"]} />}>
-              <Route path={endPoints.QUANLYCONGVIEC} element={<JobManagement />} />
-              <Route path={`${endPoints.QUANLYCONGVIEC}/:id`} element={<ListQuestion />} />
+            <Route
+              element={
+                <PrivateRoute allowedRoles={["Admin", "Mentor", "Intern"]} />
+              }
+            >
+              <Route
+                path={endPoints.QUANLYCONGVIEC}
+                element={<JobManagement />}
+              />
+              <Route
+                path={`${endPoints.QUANLYCONGVIEC}/:id`}
+                element={<ListQuestion />}
+              />
             </Route>
             <Route element={<PrivateRoute allowedRoles={["Admin"]} />}>
-              <Route path={endPoints.QUANLYNGUOIDUNG} element={<UserManagement />} />
+              <Route
+                path={endPoints.QUANLYNGUOIDUNG}
+                element={<UserManagement />}
+              />
             </Route>
-            <Route path={endPoints.QUANLYCAUHOI} element={<QuestionManagement />} />
-           
+            <Route
+              element={
+                <PrivateRoute allowedRoles={["Admin", "Mentor", "Hr"]} />
+              }
+            >
+              <Route
+                path={endPoints.QUANLYCAUHOI}
+                element={<QuestionManagement />}
+              />
+            </Route>
           </Route>
         </Route>
         <Route path={endPoints.LOGIN} element={<Login />} />

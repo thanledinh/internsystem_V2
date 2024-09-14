@@ -14,4 +14,4 @@ const LogoutAndRedirect = () => {
   return <Navigate to={endPoints.LOGIN} replace />;
 };
 
-export default LogoutAndRedirect;
+export default LogoutAndRedirect; 

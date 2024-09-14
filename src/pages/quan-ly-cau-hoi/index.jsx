@@ -10,9 +10,9 @@ import {
   deleteQuestion,
   getRandomQuestion,
 } from "@redux/features/questionReducer/questionSlice";
-import TableComponent from "@components/button-component/table-component";
 import QuestionModal from "./component/QuestionModal";
 import ButtonsComponent from "@components/button-component";
+import TableComponent from "@components/table-component";
 
 function QuestionManagement() {
   const dispatch = useDispatch();
