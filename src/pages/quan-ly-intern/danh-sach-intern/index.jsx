@@ -6,9 +6,9 @@ import {
   EyeOutlined,
   PlusOutlined,
   SendOutlined,
-  DownloadOutlined
+  DownloadOutlined,
 } from "@ant-design/icons";
-import { Button, message, Spin, Checkbox, Modal } from "antd";
+import { Button, message, Spin, Checkbox, Pagination, Input, Row, Col } from "antd";
 import ButtonsComponent from "@components/button-component";
 import TableComponent from "@components/table-component";
 import {
@@ -22,30 +22,39 @@ import {
 import { formatDateDisplay } from "@utils/dateFormat.js";
 import DeleteConfirmModal from "./components/modals/DeleteConfirmModal";
 import InternForm from "./components/modals/InternForm";
-import InternDetailModal from "./components/modals/InternDetailModal"; // NEW
+import InternDetailModal from "./components/modals/InternDetailModal";
 
 const InternManagement = () => {
   const dispatch = useDispatch();
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false); // Control delete modal
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [editData, setEditData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isSelectAll, setIsSelectAll] = useState(false);
-  const [viewData, setViewData] = useState(null); // NEW
-  const [isViewModalVisible, setIsViewModalVisible] = useState(false); // NEW
+  const [viewData, setViewData] = useState(null);
+  const [isViewModalVisible, setIsViewModalVisible] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const { listIntern, listInternship, listSchool, totalIntern, status } =
     useSelector((state) => state.intern);
 
-  // Fetch list of interns
-  const getListIntern = async () => {
-    await dispatch(fetchListIntern({ pageNumber: 1, pageSize: 10 }));
+  // Fetch list of interns with pagination
+  const getListIntern = async (pageNumber = currentPage, pageSize = pageSize) => {
+    try {
+      setLoading(true);
+      await dispatch(fetchListIntern({ pageNumber, pageSize })).unwrap();
+    } catch (error) {
+      message.error("Failed to fetch interns");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getListIntern();
-  }, [dispatch]);
+    getListIntern(currentPage, pageSize);
+  }, [dispatch, currentPage, pageSize]);
 
   useEffect(() => {
     dispatch(fetchListInternship());
@@ -69,7 +78,6 @@ const InternManagement = () => {
     setEditData(editItem);
   };
 
-  // Trigger delete modal instead of Popconfirm
   const handleDeleteClick = () => {
     if (selectedRowKeys.length === 0) {
       message.warning("Vui lòng chọn một hàng cần xóa");
@@ -78,18 +86,23 @@ const InternManagement = () => {
     setIsDeleteModalVisible(true);
   };
 
-  // Delete 1 row
-  const handleDelete = async (id) => {
+  // Delete 1 or multiple rows
+  const handleDelete = async () => {
     try {
       setLoading(true);
-      await dispatch(deleteIntern(id)).unwrap();
-      getListIntern();
-      setSelectedRowKeys([]);
+      const deletePromises = selectedRowKeys.map((id) => dispatch(deleteIntern(id)).unwrap());
+      await Promise.all(deletePromises);
       message.success("Xóa thành công");
+      const newTotal = totalIntern - selectedRowKeys.length;
+      const newPage = Math.ceil(newTotal / pageSize);
+      setCurrentPage(newPage > 0 ? newPage : 1);
+      setSelectedRowKeys([]);
+      getListIntern(newPage > 0 ? newPage : 1, pageSize);
     } catch (error) {
+      message.error("Xóa thất bại");
     } finally {
       setLoading(false);
-      setIsDeleteModalVisible(false); // Close delete modal after deletion
+      setIsDeleteModalVisible(false);
     }
   };
 
@@ -98,19 +111,18 @@ const InternManagement = () => {
     setLoading(true);
     try {
       if (editData) {
-        await dispatch(
-          updateIntern({ id: editData.id, data: values })
-        ).unwrap();
+        await dispatch(updateIntern({ id: editData.id, data: values })).unwrap();
         message.success("Cập nhật thành công");
       } else {
         await dispatch(addIntern(values)).unwrap();
         message.success("Thêm mới thành công");
       }
 
-      getListIntern();
+      getListIntern(currentPage, pageSize);
       setIsModalVisible(false);
       setSelectedRowKeys([]);
     } catch (error) {
+      message.error("Thao tác thất bại");
     } finally {
       setLoading(false);
     }
@@ -137,12 +149,6 @@ const InternManagement = () => {
     setSelectedRowKeys([]);
   };
 
-  const handleResetTable = () => {
-    setSelectedRowKeys([]);
-    setIsSelectAll(false);
-    getListIntern();
-  };
-
   const handleSelectAll = (e) => {
     const allKeys = listIntern.map((item) => item.id);
     if (e.target.checked) {
@@ -153,11 +159,37 @@ const InternManagement = () => {
     setIsSelectAll(e.target.checked);
   };
 
+  const handlePageChange = (page, newPageSize) => {
+    setCurrentPage(page);
+    setPageSize(newPageSize);
+    setSelectedRowKeys([]);
+    getListIntern(page, newPageSize);
+  };
+
+  const renderFilters = () => (
+    <div style={{ backgroundColor: '#f8f9fa', padding: '12px', borderRadius: '8px', marginBottom: '20px' }}>
+      <Row gutter={16}>
+        <Col span={4}><Input placeholder="Enter Intern's Full Name" /></Col>
+        <Col span={4}><Input placeholder="Enter Intern's Phone Number" /></Col>
+        <Col span={4}><Input placeholder="Enter Intern's Email" /></Col>
+        <Col span={4}><Input placeholder="Enter Intern's School" /></Col>
+        <Col span={5}><Button type="primary" style={{ width: '100%' }}>Clean Filters</Button></Col>
+      </Row>
+      <Row gutter={16} style={{ marginTop: '16px' }}>
+        <Col span={4}><Input placeholder="Enter Intern's Major" /></Col>
+        <Col span={4}><Input placeholder="Enter Intern's Position" /></Col>
+        <Col span={4}><Input placeholder="Enter Intern's Mentor" /></Col>
+        <Col span={4}><Input placeholder="Enter Intern's Project" /></Col>
+        <Col span={5}><Button type="primary" style={{ width: '100%' }}>Search</Button></Col>
+      </Row>
+    </div>
+  );
+
   const dataSource = listIntern.map((item, index) => ({
     id: item.id,
     key: item.id,
     group: item.group,
-    fullName: item.lastName + " " + item.firstName,
+    fullName: `${item.lastName} ${item.firstName}`,
     dob: formatDateDisplay(item.birthday),
     phoneNumber: item.phoneNumber,
     position: item.desiredPosition,
@@ -170,7 +202,7 @@ const InternManagement = () => {
     mentor: "",
     status: item.status,
     reportProcess: "",
-    stt: index + 1,
+    stt: (currentPage - 1) * pageSize + index + 1, // Adjust STT based on pagination
   }));
 
   const columns = [
@@ -189,7 +221,7 @@ const InternManagement = () => {
       width: 100,
       ellipsis: true,
       align: "center",
-      render: (text) => <a href={text}>Link</a>,
+      render: (text) => <a href={text} target="_blank" rel="noopener noreferrer">Link</a>,
     },
     { title: "Đánh giá", dataIndex: "comments", key: "comments", width: 180, ellipsis: true, align: "center" },
     { title: "Vai trò", dataIndex: "role", key: "role", width: 150, ellipsis: true, align: "center" },
@@ -221,39 +253,41 @@ const InternManagement = () => {
       label: "Gửi email",
       type: "default",
       icon: <SendOutlined />,
-      style: { background: "#6A4CE6", color: "white"},
+      style: { background: "#6A4CE6", color: "white" },
       onClick: () => console.log("Send email clicked"),
     },
     {
       label: "Xuất Excel",
       type: "default",
       icon: <DownloadOutlined />,
-      style: { background: "#00C16E", color: "white"},
+      style: { background: "#00C16E", color: "white" },
       onClick: () => console.log("Export Excel clicked"),
     },
     {
       label: "Sửa",
       type: "default",
       icon: <EditOutlined />,
-      style: selectedRowKeys.length !== 1
-        ? { background: "#FF8C00", color: "white", opacity: 0.45, pointerEvents: "none" }
-        : { background: "#FF8C00", color: "white" },
+      style:
+        selectedRowKeys.length !== 1
+          ? { background: "#FF8C00", color: "white", opacity: 0.45, pointerEvents: "none" }
+          : { background: "#FF8C00", color: "white" },
       onClick: handleEdit,
     },
     {
       label: "Xóa",
       type: "default",
       icon: <DeleteOutlined />,
-      style: selectedRowKeys.length === 0
-        ? { background: "#FF3E30", color: "white", opacity: 0.4, pointerEvents: "none" }
-        : { background: "#FF3E30", color: "white"},
+      style:
+        selectedRowKeys.length === 0
+          ? { background: "#FF3E30", color: "white", opacity: 0.4, pointerEvents: "none" }
+          : { background: "#FF3E30", color: "white" },
       onClick: handleDeleteClick,
     },
     {
       label: "Thêm Intern",
       type: "primary",
       icon: <PlusOutlined />,
-      style: { background: "#007BFF", color: "white"},
+      style: { background: "#007BFF", color: "white" },
       onClick: handleAdd,
     },
   ];
@@ -261,7 +295,9 @@ const InternManagement = () => {
   return (
     <div>
       <Spin spinning={loading}>
-        <div style={{ marginBottom: 16 }}>
+        {renderFilters()}
+
+        <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between" }}>
           <Checkbox checked={isSelectAll} onChange={handleSelectAll}>
             Chọn tất cả
           </Checkbox>
@@ -271,21 +307,24 @@ const InternManagement = () => {
           columns={columns}
           rowSelection={rowSelection}
           rowKey="id"
-          selectedRowKeys={selectedRowKeys}
-          setSelectedRowKeys={setSelectedRowKeys}
-          selectionType="checkbox"
+          scroll={{ x: 1500 }}
+          pagination={false}
         />
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 20 }}>
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={totalIntern}
+            onChange={handlePageChange}
+            onShowSizeChange={handlePageChange}
+            showSizeChanger
+            showQuickJumper
+            pageSizeOptions={["10", "20", "50"]}
+            showTotal={(total) => `Tổng ${total} bản ghi`}
+          />
+          <ButtonsComponent buttons={buttons} />
+        </div>
       </Spin>
-
-      <div
-        style={{
-          position: "fixed",
-          bottom: 50,
-          zIndex: 1000,
-        }}
-      >
-        <ButtonsComponent buttons={buttons} />
-      </div>
 
       <InternForm
         visible={isModalVisible}
@@ -297,11 +336,11 @@ const InternManagement = () => {
         confirmLoading={loading}
       />
 
-      {/* Delete Confirm Modal */}
       <DeleteConfirmModal
         visible={isDeleteModalVisible}
         onCancel={() => setIsDeleteModalVisible(false)}
-        onConfirm={() => handleDelete(selectedRowKeys[0])}
+        onConfirm={handleDelete}
+        selectedCount={selectedRowKeys.length}
       />
 
       <InternDetailModal

@@ -95,7 +95,9 @@ const internSlice = createSlice({
       .addCase(fetchListIntern.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.listIntern = action.payload.data.items;
-        state.totalIntern = action.payload.total;
+        state.totalIntern = action.payload.data.totalCount;
+        state.pageNumber = action.payload.data.pageNumber;
+        state.totalPages = action.payload.data.totalPages;
       })
       .addCase(fetchListIntern.rejected, (state, action) => {
         state.status = "failed";
