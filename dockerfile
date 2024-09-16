@@ -16,8 +16,11 @@ COPY . .
 # Build the app using Vite
 RUN yarn build
 
-# Expose the port the app will run on
-EXPOSE 4173
+# Install 'serve' globally to serve the built files
+RUN yarn global add serve
 
-# Command to run the app in preview mode
-CMD ["yarn", "preview"]
+# Expose the port the app will run on
+EXPOSE 5000
+
+# Use 'serve' to serve the built files from the 'dist' folder
+CMD ["serve", "-s", "dist", "-l", "5000"]
